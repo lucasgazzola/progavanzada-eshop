@@ -43,7 +43,9 @@ public class MarcaService implements IMarcaService {
     List<Marca> marcas = this.repository.findAll();
 
     // Eliminamos espacios en Blanco
-    marcaDTO.setNombre(marcaDTO.getNombre().trim());
+    // Reemplazamos múltiples espacios intermedios por uno solo
+    marcaDTO.setNombre(marcaDTO.getNombre().trim().replaceAll("\\s+", " "));
+
     if (marcaDTO.getNombre().equals("")) {
       throw new BadRequestException("El nombre no puede estar vacío");
     }
