@@ -13,7 +13,7 @@ public class MarcaMapper {
     marcaDTO.setId(marca.getId());
     marcaDTO.setNombre(marca.getNombre());
     marcaDTO.setDescripcion(marca.getDescripcion());
-    marcaDTO.setEliminado(marca.isEliminado());
+    // marcaDTO.setEliminado(marca.isEliminado());
     return marcaDTO;
   }
 
@@ -22,7 +22,7 @@ public class MarcaMapper {
     marca.setId(marcaDTO.getId());
     marca.setDescripcion(marcaDTO.getDescripcion());
     marca.setNombre(marcaDTO.getNombre());
-    marca.setEliminado(marcaDTO.isEliminado());
+    // marca.setEliminado(marcaDTO.isEliminado());
     return marca;
   }
 }

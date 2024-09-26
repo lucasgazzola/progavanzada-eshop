@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.eshop.progavanzada.dtos.MarcaDTO;
 import com.eshop.progavanzada.dtos.UpdateMarcaDTO;
+import com.eshop.progavanzada.models.Marca;
 
 public interface IMarcaService {
 
@@ -20,5 +21,5 @@ public interface IMarcaService {
 
   public void eliminarMarca(Integer id);
 
-  public void recuperarMarca(Integer id);
+  public void recuperarMarca(Marca marca);
 }

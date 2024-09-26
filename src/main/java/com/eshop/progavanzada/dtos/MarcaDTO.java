@@ -16,5 +16,5 @@ public class MarcaDTO {
   private String nombre;
 
   private String descripcion;
-  private boolean eliminado;
+
 }

@@ -39,10 +39,14 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public MarcaDTO crearMarca(MarcaDTO marcaDTO) {
-    List<Marca> marcas = this.repository.findByEliminado(false);
+    // Buscamos todas las marcas no eliminadas
+    List<Marca> marcas = this.repository.findAll();
 
     // Eliminamos espacios en Blanco
     marcaDTO.setNombre(marcaDTO.getNombre().trim());
+    if (marcaDTO.getNombre().equals("")) {
+      throw new BadRequestException("El nombre no puede estar vacío");
+    }
     if (marcaDTO.getDescripcion() != null) {
       if (!marcaDTO.getDescripcion().isEmpty()) {
         marcaDTO.setDescripcion(marcaDTO.getDescripcion().trim());
@@ -51,21 +55,29 @@ public class MarcaService implements IMarcaService {
       }
     }
 
-    if (marcas.stream().anyMatch(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase()))) {
+    Marca marcaRepetida = marcas.stream()
+        .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst().orElse(null);
+
+    // Si la marca no existe, la creamos
+    if (marcaRepetida == null) {
+      Marca marca = MarcaMapper.toEntity(marcaDTO);
+      this.repository.save(marca);
+      return MarcaMapper.toDTO(marca);
+    }
+
+    // Si la marca ya existe y no está eliminada, lanza una excepción
+    if (!marcaRepetida.isEliminado()) {
       throw new DataConflictException(
           "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
     }
 
-    // Validar si la marca ya existe
-    if (this.repository.existsByNombre(marcaDTO.getNombre())) {
-      throw new DataConflictException(
-          "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
-    }
-
-    Marca marca = MarcaMapper.toEntity(marcaDTO);
-
-    this.repository.save(marca);
-    return MarcaMapper.toDTO(marca);
+    // Si la marca ya existe pero está eliminada, recuperamos la marca
+    // Además, actualizamos los campos nombre y descripción
+    marcaRepetida.setNombre(marcaDTO.getNombre());
+    marcaRepetida.setDescripcion(marcaDTO.getDescripcion());
+    this.recuperarMarca(marcaRepetida);
+    // this.repository.save(marcaRepetida);
+    return MarcaMapper.toDTO(marcaRepetida);
   }
 
   @Override
@@ -102,16 +114,7 @@ public class MarcaService implements IMarcaService {
   }
 
   @Override
-  public void recuperarMarca(Integer id) {
-    // Buscamos todas las marcas eliminadas
-    List<Marca> marcas = this.repository.findByEliminado(true);
-
-    // Buscamos la marca con el id
-    // Si la marca no existe, lanza una excepción
-    Marca marca = marcas.stream().filter(m -> m.getId().equals(id)).findFirst()
-        .orElseThrow(() -> new NotFoundException("La marca con id '" + id + "' no existe"));
-
-    // Recuperamos la marca
+  public void recuperarMarca(Marca marca) {
     marca.recuperarLogico();
     this.repository.save(marca);
   }
