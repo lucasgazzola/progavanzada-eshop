@@ -1,22 +1,24 @@
-import { Link } from 'react-router-dom'
+import LinkItem from './LinkItem'
 
 function Header() {
   return (
-    <header className="bg-red-600 w-full flex items-center justify-start h-10">
-      <ul className="flex gap-6">
-        <li>
-          <Link to={'/'}>Home</Link>
-        </li>
-        <li>
-          <Link to={'/marcas'}>Marcas</Link>
-        </li>
-        <li>
-          <Link to={'/productos'}>Productos</Link>
-        </li>
-        <li>
-          <Link to={'/categorias'}>Categorias</Link>
-        </li>
-      </ul>
+    <header className="bg-[#1F2937] font-bold w-full flex items-center justify-start px-6 h-12">
+      <nav>
+        <ul className="flex gap-6">
+          <li>
+            <LinkItem to={'/'} text={'Home'} />
+          </li>
+          <li>
+            <LinkItem to={'/marcas'} text={'Marcas'} />
+          </li>
+          <li>
+            <LinkItem to={'/productos'} text={'Productos'} />
+          </li>
+          <li>
+            <LinkItem to={'/categorias'} text={'Categorias'} />
+          </li>
+        </ul>
+      </nav>
     </header>
   )
 }
