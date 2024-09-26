@@ -13,12 +13,30 @@ function Marcas() {
   })
   const [marcasList, setMarcasList] = useState<Array<MarcaDTO>>([])
 
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingId, setEditingId] = useState<number | null>(null) // Almacena el ID cuando estamos editando
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isModalOpen) {
+        setIsModalOpen(false)
+        setIsEditing(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+
+    // Limpieza del evento al desmontar el componente
+    return () => {
+      document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isModalOpen])
+
   useEffect(() => {
     const fetchMarcas = async () => {
       const response = await fetch('http://localhost:8080/api/marcas')
       const data = await response.json()
       setMarcasList(data)
-      console.log(data)
     }
     fetchMarcas()
   }, [isModalOpen])
@@ -32,9 +50,11 @@ function Marcas() {
     })
   }
 
+  // Función para agregar o editar una marca
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (nuevaMarca.nombre === '' || nuevaMarca.nombre.trim() === '') {
+
+    if (nuevaMarca.nombre.trim() === '') {
       showToast({
         message: 'El nombre no puede estar vacío',
         type: ToastType.ERROR,
@@ -43,8 +63,14 @@ function Marcas() {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/marcas', {
-        method: 'POST',
+      const url = editingId
+        ? `http://localhost:8080/api/marcas/${editingId}` // Si estamos editando, actualizamos la marca
+        : 'http://localhost:8080/api/marcas' // Si estamos agregando, creamos una nueva
+
+      const method = editingId ? 'PUT' : 'POST'
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -54,20 +80,15 @@ function Marcas() {
         }),
       })
 
-      const data = (await response.json()) as {
-        path: string
-        status: number
-        timestamp: string
-        error: string
-        details: Array<string>
-      }
-
-      if (data.status === 409) {
+      if (!response.ok) {
+        const data = await response.json()
         throw new Error(data.details[0])
       }
 
       showToast({
-        message: 'La marca se agregó correctamente',
+        message: editingId
+          ? 'La marca se actualizó correctamente'
+          : 'La marca se agregó correctamente',
         type: ToastType.SUCCESS,
       })
 
@@ -75,8 +96,53 @@ function Marcas() {
         nombre: '',
         descripcion: '',
       })
+      setIsModalOpen(false)
+      setIsEditing(false)
+      setEditingId(null) // Reiniciamos el estado de edición
+    } catch (error) {
+      if (error instanceof Error) {
+        showToast({
+          message: error.message,
+          type: ToastType.ERROR,
+        })
+      }
+    }
+  }
 
-      setIsModalOpen(prev => !prev)
+  // Función para abrir el modal de edición
+  const handleEdit = (marca: MarcaDTO) => {
+    setNuevaMarca({
+      nombre: marca.nombre.trim(),
+      descripcion: marca.descripcion.trim(),
+    })
+    setIsEditing(true)
+    setEditingId(marca.id)
+    setIsModalOpen(true)
+  }
+
+  // Función para eliminar una marca
+  const handleDelete = async (id: number) => {
+    const confirmDelete = window.confirm(
+      '¿Estás seguro de que deseas eliminar esta marca?'
+    )
+    if (!confirmDelete) return
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/marcas/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar la marca')
+      }
+
+      showToast({
+        message: 'La marca fue eliminada correctamente',
+        type: ToastType.SUCCESS,
+      })
+
+      // Actualizamos la lista de marcas
+      setMarcasList(prev => prev.filter(marca => marca.id !== id))
     } catch (error) {
       if (error instanceof Error) {
         showToast({
@@ -94,7 +160,11 @@ function Marcas() {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold dark:text-white">Marcas</h2>
             <button
-              onClick={() => setIsModalOpen(prev => !prev)}
+              onClick={() => {
+                setIsModalOpen(true)
+                setIsEditing(false) // Nos aseguramos de que no estamos en modo edición
+                setNuevaMarca({ nombre: '', descripcion: '' })
+              }}
               className="flex justify-center items-center bg-sky-700 hover:bg-blue-700 text-white text-sm font-bold py-2 px-3 rounded-md"
               type="button">
               <svg
@@ -109,34 +179,40 @@ function Marcas() {
                   strokeWidth="2"
                   d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              Agregar
+              Agregar Marca
             </button>
           </div>
           <div className="mt-5">
             <div className="overflow-x-auto ">
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <thead className="text-xs text-center text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
                       Nombre
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Descripcion
+                      Descripción
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      Acción
+                      Acción
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {marcasList.map(marca => (
-                    <MarcaItem key={marca.id} {...marca} />
+                    <MarcaItem
+                      key={marca.id}
+                      {...marca}
+                      onEdit={() => handleEdit(marca)}
+                      onDelete={() => handleDelete(marca.id)}
+                    />
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
+        {/* Modal para agregar o editar marca */}
         {isModalOpen && (
           <div
             onClick={() => setIsModalOpen(false)}
@@ -145,7 +221,9 @@ function Marcas() {
               onClick={e => e.stopPropagation()}
               className="dark:bg-gray-900 antialiased rounded-lg shadow-lg p-6 w-full max-w-md">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Agregar Marca</h2>
+                <h2 className="text-xl font-bold">
+                  {isEditing ? 'Editar Marca' : 'Agregar Marca'}
+                </h2>
                 <button
                   onClick={() => setIsModalOpen(false)} // Lógica para cerrar el modal
                   className="text-gray-500 hover:text-gray-700">
@@ -199,7 +277,7 @@ function Marcas() {
                   <button
                     type="submit"
                     className="bg-sky-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-                    Agregar
+                    {isEditing ? 'Actualizar' : 'Agregar'}
                   </button>
                 </div>
               </form>
