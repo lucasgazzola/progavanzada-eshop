@@ -96,6 +96,13 @@ public class MarcaService implements IMarcaService {
     if (marcaDTO.getNombre() != null)
       marca.setNombre(marcaDTO.getNombre().trim());
 
+    List<Marca> marcas = this.repository.findAll();
+    Marca marcaRepetida = marcas.stream()
+        .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst().orElse(null);
+    if (marcaRepetida != null && !marcaRepetida.getId().equals(marca.getId())) {
+      throw new DataConflictException(
+          "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
+    }
     // Guardar los cambios en la base de datos.
     this.repository.save(marca);
 
