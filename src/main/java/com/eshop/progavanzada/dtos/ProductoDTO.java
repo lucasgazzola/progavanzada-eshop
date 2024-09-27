@@ -17,5 +17,5 @@ public class ProductoDTO {
   private Double precio;
   private boolean eliminado;
   private Integer marcaId;
-  // private MarcaDTO marca; // Incluimos MarcaDTO en vez de solo marcaId
+  private MarcaDTO marca; // Incluimos MarcaDTO en vez de solo marcaId
 }
