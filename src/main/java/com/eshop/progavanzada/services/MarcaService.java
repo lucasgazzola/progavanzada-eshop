@@ -42,7 +42,7 @@ public class MarcaService implements IMarcaService {
     // Buscamos todas las marcas no eliminadas
     List<Marca> marcas = this.repository.findAll();
 
-    // Eliminamos espacios en Blanco
+    // Eliminamos espacios en blanco
     // Reemplazamos múltiples espacios intermedios por uno solo
     marcaDTO.setNombre(marcaDTO.getNombre().trim().replaceAll("\\s+", " "));
 
@@ -97,7 +97,7 @@ public class MarcaService implements IMarcaService {
       marca.setNombre(marcaDTO.getNombre().trim());
 
     // Guardar los cambios en la base de datos.
-    marca = this.repository.save(marca);
+    this.repository.save(marca);
 
     // Utilizar MarcaMapper para mapear la marca a DTO.
     return MarcaMapper.toDTO(marca);
