@@ -26,6 +26,7 @@ public class ProductoService implements IProductoService {
   @Override
   public List<ProductoDTO> listarProductos() {
     List<Producto> productos = this.repository.findByEliminado(false);
+
     return productos.stream().map(ProductoMapper::toDTO).toList();
   }
 
@@ -104,12 +105,11 @@ public class ProductoService implements IProductoService {
 
   @Override
   public void eliminarProducto(Integer id) {
-    ProductoDTO productoDTO = this.buscarPorId(id);
-    if (productoDTO == null) {
+    Producto producto = this.repository.findById(id).orElse(null);
+    if (producto == null) {
       throw new NotFoundException("El id " + id + " recibido no existe");
 
     }
-    Producto producto = ProductoMapper.toEntity(productoDTO);
     producto.eliminarLogico();
     this.repository.save(producto);
   }
