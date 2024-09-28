@@ -4,15 +4,22 @@ import { MarcaDTO } from '../dtos/MarcaDTO'
 import useAppContext from '../hooks/useAppContext'
 import ToastType from '../enums/ToastType'
 
+const MARCA_INICIAL = {
+  nombre: '',
+  descripcion: '',
+  eliminado: false,
+}
+
 function Marcas() {
   const { showToast } = useAppContext()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [nuevaMarca, setNuevaMarca] = useState({
     nombre: '',
     descripcion: '',
+    eliminado: false,
   })
   const [marcasList, setMarcasList] = useState<Array<MarcaDTO>>([])
-
+  const [incluirEliminados, setIncluirEliminados] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null) // Almacena el ID cuando estamos editando
 
@@ -34,12 +41,15 @@ function Marcas() {
 
   useEffect(() => {
     const fetchMarcas = async () => {
-      const response = await fetch('http://localhost:8080/api/marcas')
+      const response = await fetch(
+        'http://localhost:8080/api/marcas?incluirEliminados=' +
+          incluirEliminados
+      )
       const data = await response.json()
       setMarcasList(data)
     }
     fetchMarcas()
-  }, [isModalOpen])
+  }, [isModalOpen, incluirEliminados])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -69,6 +79,7 @@ function Marcas() {
 
       const method = editingId ? 'PUT' : 'POST'
 
+      console.log({ nuevaMarca })
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -77,6 +88,7 @@ function Marcas() {
         body: JSON.stringify({
           nombre: nuevaMarca.nombre.trim(),
           descripcion: nuevaMarca.descripcion.trim(),
+          eliminado: nuevaMarca.eliminado,
         }),
       })
 
@@ -92,10 +104,7 @@ function Marcas() {
         type: ToastType.SUCCESS,
       })
 
-      setNuevaMarca({
-        nombre: '',
-        descripcion: '',
-      })
+      setNuevaMarca({ ...MARCA_INICIAL })
       setIsModalOpen(false)
       setIsEditing(false)
       setEditingId(null) // Reiniciamos el estado de edición
@@ -111,10 +120,7 @@ function Marcas() {
 
   // Función para abrir el modal de edición
   const handleEdit = (marca: MarcaDTO) => {
-    setNuevaMarca({
-      nombre: marca.nombre.trim(),
-      descripcion: marca.descripcion.trim(),
-    })
+    setNuevaMarca({ ...marca })
     setIsEditing(true)
     setEditingId(marca.id)
     setIsModalOpen(true)
@@ -122,10 +128,43 @@ function Marcas() {
 
   // Función para eliminar una marca
   const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm(
-      '¿Estás seguro de que deseas eliminar esta marca?'
-    )
+    // Si ya está eliminada la recuperamos
+    const response = await fetch(`http://localhost:8080/api/marcas/${id}`)
+    const data = await response.json()
+
+    const confirmDelete = window.confirm(`¿Estás seguro de que deseas ${
+      data.eliminado ? 'recuperar' : 'eliminar'
+    } esta marca?
+    `)
     if (!confirmDelete) return
+
+    if (data.eliminado) {
+      await fetch(`http://localhost:8080/api/marcas/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: data.nombre,
+          descripcion: data.descripcion,
+          eliminado: false,
+        }),
+      })
+      // const data = await response.json()
+
+      showToast({
+        message: 'La marca fue recuperada correctamente',
+        type: ToastType.SUCCESS,
+      })
+
+      // Actualizamos la lista de marcas
+      setMarcasList(prev =>
+        prev.map(marca =>
+          marca.id === id ? { ...marca, eliminado: false } : marca
+        )
+      )
+      return
+    }
 
     try {
       const response = await fetch(`http://localhost:8080/api/marcas/${id}`, {
@@ -142,6 +181,14 @@ function Marcas() {
       })
 
       // Actualizamos la lista de marcas
+      if (incluirEliminados) {
+        setMarcasList(prev =>
+          prev.map(marca =>
+            marca.id === id ? { ...marca, eliminado: true } : marca
+          )
+        )
+        return
+      }
       setMarcasList(prev => prev.filter(marca => marca.id !== id))
     } catch (error) {
       if (error instanceof Error) {
@@ -157,13 +204,22 @@ function Marcas() {
     <>
       <section className="bg-gray-50 dark:bg-gray-900 p-8 antialiased flex-1 relative">
         <div className="max-w-2xl">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-10 justify-between">
             <h2 className="text-xl font-bold dark:text-white">Marcas</h2>
+            <div className="flex gap-2 items-center">
+              <label htmlFor="mostarEliminadas">Mostar eliminados</label>
+              <input
+                type="checkbox"
+                name="mostarEliminadas"
+                onChange={() => setIncluirEliminados(!incluirEliminados)}
+                checked={incluirEliminados}
+              />
+            </div>
             <button
               onClick={() => {
                 setIsModalOpen(true)
                 setIsEditing(false) // Nos aseguramos de que no estamos en modo edición
-                setNuevaMarca({ nombre: '', descripcion: '' })
+                setNuevaMarca({ ...MARCA_INICIAL })
               }}
               className="flex justify-center items-center bg-sky-700 hover:bg-blue-700 text-white text-sm font-bold py-2 px-3 rounded-md"
               type="button">
@@ -192,6 +248,9 @@ function Marcas() {
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Descripción
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Eliminado
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Acción
@@ -265,6 +324,22 @@ function Marcas() {
                     name="descripcion"
                     value={nuevaMarca.descripcion}
                     rows={5}
+                  />
+                </div>
+                <div className="mt-4 flex items-center gap-4">
+                  <label className="block text-gray-50">Eliminado</label>
+                  <input
+                    type="checkbox"
+                    className="px-2 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+                    placeholder="Descripción de la marca"
+                    onChange={() =>
+                      setNuevaMarca({
+                        ...nuevaMarca,
+                        eliminado: !nuevaMarca.eliminado,
+                      })
+                    }
+                    name="descripcion"
+                    checked={nuevaMarca.eliminado}
                   />
                 </div>
                 <div className="mt-6 flex justify-end">

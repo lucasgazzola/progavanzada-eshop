@@ -13,7 +13,10 @@ public class UpdateMarcaDTO {
 
   private String descripcion;
 
+  private boolean eliminado;
+
   public boolean isEmpty() {
+
     return this.nombre == null && this.descripcion == null;
   }
 }

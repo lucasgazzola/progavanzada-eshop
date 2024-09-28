@@ -82,7 +82,6 @@ public class ProductoService implements IProductoService {
       throw new NotFoundException("El producto con id '" + id + "' no existe");
     }
 
-    producto.getMarca().getId();
     // Actualizar los campos.
     if (productoDTO.getDescripcion() != null)
       producto.setDescripcion(productoDTO.getDescripcion().trim());

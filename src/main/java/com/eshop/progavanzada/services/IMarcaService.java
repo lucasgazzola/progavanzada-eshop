@@ -11,7 +11,7 @@ import com.eshop.progavanzada.models.Marca;
 public interface IMarcaService {
 
   @ElementCollection(targetClass = Integer.class)
-  public List<MarcaDTO> listarMarcas();
+  public List<MarcaDTO> listarMarcas(boolean incluirEliminados);
 
   public MarcaDTO buscarPorId(Integer id);
 

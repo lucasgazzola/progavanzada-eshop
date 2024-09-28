@@ -21,8 +21,9 @@ public class MarcaController {
   private IMarcaService service;
 
   @GetMapping
-  public ResponseEntity<List<MarcaDTO>> getAll() {
-    List<MarcaDTO> marcas = this.service.listarMarcas();
+  public ResponseEntity<List<MarcaDTO>> getAll(
+      @RequestParam(value = "incluirEliminados", required = false, defaultValue = "false") boolean incluirEliminados) {
+    List<MarcaDTO> marcas = this.service.listarMarcas(incluirEliminados);
     return ResponseEntity.ok(marcas);
   }
 

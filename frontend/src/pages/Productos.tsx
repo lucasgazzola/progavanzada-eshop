@@ -10,10 +10,12 @@ const PRODUCTO_INICIAL = {
   nombre: '',
   descripcion: '',
   precio: 0,
+  eliminado: false,
   marca: {
     id: 0,
     nombre: '',
     descripcion: '',
+    eliminado: false,
   },
   id: 0,
 }
@@ -29,6 +31,10 @@ function Productos() {
 
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null) // Almacena el ID cuando estamos editando
+
+  useEffect(() => {
+    console.log({ nuevoProducto })
+  }, [nuevoProducto.eliminado])
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -66,6 +72,7 @@ function Productos() {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    console.log({ nuevoProducto })
     setNuevoProducto({
       ...nuevoProducto,
       [e.target.name]: e.target.value,
@@ -133,6 +140,7 @@ function Productos() {
       precio: producto.precio,
       marca: producto.marca,
       id: producto.id,
+      eliminado: producto.eliminado,
     })
     setIsEditing(true)
     setEditingId(producto.id)
@@ -215,7 +223,10 @@ function Productos() {
                       Precio
                     </th>
                     <th scope="col" className="px-6 py-3">
-                      MarcaId
+                      Marca
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Eliminado
                     </th>
                     <th scope="col" className="px-6 py-3">
                       Acción
@@ -323,6 +334,20 @@ function Productos() {
                     name="descripcion"
                     value={nuevoProducto.descripcion}
                     rows={5}
+                  />
+                </div>
+                <div className="mt-4">
+                  <label className="block text-gray-50">Eliminado</label>
+                  <input
+                    type="checkbox"
+                    name="eliminado"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setNuevoProducto({
+                        ...nuevoProducto,
+                        eliminado: e.target.checked,
+                      })
+                    }}
+                    checked={nuevoProducto.eliminado}
                   />
                 </div>
 

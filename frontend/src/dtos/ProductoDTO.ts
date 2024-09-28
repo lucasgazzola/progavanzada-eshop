@@ -5,5 +5,6 @@ export type ProductoDTO = {
   nombre: string
   descripcion: string
   precio: number
+  eliminado: boolean
   marca: MarcaDTO
 }

@@ -17,6 +17,8 @@ public class MarcaDTO {
   @NotEmpty(message = "El nombre no puede estar vacío")
   private String nombre;
 
+  private boolean eliminado;
+
   private String descripcion;
 
 }

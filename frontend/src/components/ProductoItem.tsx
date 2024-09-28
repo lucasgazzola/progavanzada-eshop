@@ -5,6 +5,7 @@ type Props = {
   nombre: string
   descripcion: string
   precio: number
+  eliminado: boolean
   marca: MarcaDTO
   onEdit: () => void
   onDelete: () => Promise<void>
@@ -15,6 +16,7 @@ function ProductoItem({
   descripcion,
   precio,
   marca,
+  eliminado,
   onEdit,
   onDelete,
 }: Props) {
@@ -30,6 +32,9 @@ function ProductoItem({
       </td>
       <td className="px-4 py-3 max-w-[12rem] truncate">{precio}</td>
       <td className="px-4 py-3 max-w-[12rem] truncate">{marca.nombre}</td>
+      <td className="px-4 py-3 max-w-[12rem] truncate">
+        {eliminado ? 'Eliminado' : 'Activo'}
+      </td>
       <td className="px-4 py-3 flex items-center justify-end gap-2">
         <button
           className="inline-flex items-center text-sm font-medium text-blue-600 dark:text-blue-500 hover:underline"

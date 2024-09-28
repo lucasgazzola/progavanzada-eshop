@@ -21,8 +21,13 @@ public class MarcaService implements IMarcaService {
   private MarcaRepository repository;
 
   @Override
-  public List<MarcaDTO> listarMarcas() {
-    List<Marca> marcas = this.repository.findByEliminado(false);
+  public List<MarcaDTO> listarMarcas(boolean incluirEliminados) {
+    List<Marca> marcas;
+    if (incluirEliminados) {
+      marcas = this.repository.findAll();
+    } else {
+      marcas = this.repository.findByEliminado(false);
+    }
     return marcas.stream().map(MarcaMapper::toDTO).toList();
   }
 
@@ -61,32 +66,21 @@ public class MarcaService implements IMarcaService {
         .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst().orElse(null);
 
     // Si la marca no existe, la creamos
-    if (marcaRepetida == null) {
-      Marca marca = MarcaMapper.toEntity(marcaDTO);
-      this.repository.save(marca);
-      return MarcaMapper.toDTO(marca);
-    }
-
-    // Si la marca ya existe y no está eliminada, lanza una excepción
-    if (!marcaRepetida.isEliminado()) {
+    if (marcaRepetida != null) {
       throw new DataConflictException(
           "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
     }
 
-    // Si la marca ya existe pero está eliminada, recuperamos la marca
-    // Además, actualizamos los campos nombre y descripción
-    marcaRepetida.setNombre(marcaDTO.getNombre());
-    marcaRepetida.setDescripcion(marcaDTO.getDescripcion());
-    this.recuperarMarca(marcaRepetida);
-    // this.repository.save(marcaRepetida);
-    return MarcaMapper.toDTO(marcaRepetida);
+    Marca marca = MarcaMapper.toEntity(marcaDTO);
+    this.repository.save(marca);
+    return MarcaMapper.toDTO(marca);
   }
 
   @Override
   public MarcaDTO actualizarMarca(Integer id, UpdateMarcaDTO marcaDTO) {
     // Si todos los campos son nulos, lanza una excepción
-    if (marcaDTO.isEmpty())
-      throw new BadRequestException("No se han especificado campos a actualizar.");
+    // if (marcaDTO.isEmpty() && marcaDTO.isEliminado())
+    // throw new BadRequestException("No se han especificado campos a actualizar.");
 
     Marca marca = MarcaMapper.toEntity(this.buscarPorId(id));
 
@@ -95,6 +89,11 @@ public class MarcaService implements IMarcaService {
       marca.setDescripcion(marcaDTO.getDescripcion().trim());
     if (marcaDTO.getNombre() != null)
       marca.setNombre(marcaDTO.getNombre().trim());
+    if (marcaDTO.isEliminado()) {
+      marca.eliminarLogico();
+    } else {
+      marca.recuperarLogico();
+    }
 
     List<Marca> marcas = this.repository.findAll();
     Marca marcaRepetida = marcas.stream()
