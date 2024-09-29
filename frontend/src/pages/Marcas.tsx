@@ -3,12 +3,7 @@ import MarcaItem from '../components/MarcaItem'
 import { MarcaDTO } from '../dtos/MarcaDTO'
 import useAppContext from '../hooks/useAppContext'
 import ToastType from '../enums/ToastType'
-
-const MARCA_INICIAL = {
-  nombre: '',
-  descripcion: '',
-  eliminado: false,
-}
+import { MARCA_INICIAL, MARCAS_URL } from '../constants'
 
 function Marcas() {
   const { showToast } = useAppContext()
@@ -42,8 +37,7 @@ function Marcas() {
   useEffect(() => {
     const fetchMarcas = async () => {
       const response = await fetch(
-        'http://localhost:8080/api/marcas?incluirEliminados=' +
-          incluirEliminados
+        `${MARCAS_URL}?incluirEliminados=${incluirEliminados}`
       )
       const data = await response.json()
       setMarcasList(data)
@@ -74,12 +68,11 @@ function Marcas() {
 
     try {
       const url = editingId
-        ? `http://localhost:8080/api/marcas/${editingId}` // Si estamos editando, actualizamos la marca
-        : 'http://localhost:8080/api/marcas' // Si estamos agregando, creamos una nueva
+        ? `${MARCAS_URL}/${editingId}` // Si estamos editando, actualizamos la marca
+        : `${MARCAS_URL}` // Si estamos agregando, creamos una nueva
 
       const method = editingId ? 'PUT' : 'POST'
 
-      console.log({ nuevaMarca })
       const response = await fetch(url, {
         method: method,
         headers: {
@@ -129,7 +122,7 @@ function Marcas() {
   // Función para eliminar una marca
   const handleDelete = async (id: number) => {
     // Si ya está eliminada la recuperamos
-    const response = await fetch(`http://localhost:8080/api/marcas/${id}`)
+    const response = await fetch(`${MARCAS_URL}/${id}`)
     const data = await response.json()
 
     const confirmDelete = window.confirm(`¿Estás seguro de que deseas ${
@@ -139,14 +132,12 @@ function Marcas() {
     if (!confirmDelete) return
 
     if (data.eliminado) {
-      await fetch(`http://localhost:8080/api/marcas/${id}`, {
+      await fetch(`${MARCAS_URL}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          nombre: data.nombre,
-          descripcion: data.descripcion,
           eliminado: false,
         }),
       })
@@ -167,7 +158,7 @@ function Marcas() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/api/marcas/${id}`, {
+      const response = await fetch(`${MARCAS_URL}/${id}`, {
         method: 'DELETE',
       })
 
@@ -207,10 +198,10 @@ function Marcas() {
           <div className="flex items-center gap-10 justify-between">
             <h2 className="text-xl font-bold dark:text-white">Marcas</h2>
             <div className="flex gap-2 items-center">
-              <label htmlFor="mostarEliminadas">Mostar eliminados</label>
+              <label htmlFor="mostarEliminados">Mostar eliminados</label>
               <input
                 type="checkbox"
-                name="mostarEliminadas"
+                name="mostarEliminados"
                 onChange={() => setIncluirEliminados(!incluirEliminados)}
                 checked={incluirEliminados}
               />
@@ -322,7 +313,7 @@ function Marcas() {
                     placeholder="Descripción de la marca"
                     onChange={handleInputChange}
                     name="descripcion"
-                    value={nuevaMarca.descripcion}
+                    value={nuevaMarca.descripcion || ''}
                     rows={5}
                   />
                 </div>

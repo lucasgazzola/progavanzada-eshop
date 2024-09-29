@@ -44,7 +44,7 @@ function ProductoItem({
         <button
           className="inline-flex items-center text-sm font-medium text-red-600 dark:text-red-500 hover:underline"
           onClick={onDelete}>
-          Eliminar
+          {eliminado ? 'Recuperar' : 'Eliminar'}
         </button>
       </td>
     </tr>
