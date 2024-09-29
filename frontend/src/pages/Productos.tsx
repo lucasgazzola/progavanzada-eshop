@@ -4,21 +4,7 @@ import { ProductoDTO } from '../dtos/ProductoDTO'
 import ToastType from '../enums/ToastType'
 import ProductoItem from '../components/ProductoItem'
 import { MarcaDTO } from '../dtos/MarcaDTO'
-
-const PRODUCTOS_URL = 'http://localhost:8080/api/productos'
-const PRODUCTO_INICIAL = {
-  nombre: '',
-  descripcion: '',
-  precio: 0,
-  eliminado: false,
-  marca: {
-    id: 0,
-    nombre: '',
-    descripcion: '',
-    eliminado: false,
-  },
-  id: 0,
-}
+import { MARCAS_URL, PRODUCTO_INICIAL, PRODUCTOS_URL } from '../constants'
 
 function Productos() {
   const { showToast } = useAppContext()
@@ -28,13 +14,9 @@ function Productos() {
   })
   const [productosList, setProductosList] = useState<Array<ProductoDTO>>([])
   const [marcasList, setMarcasList] = useState<Array<MarcaDTO>>([])
-
+  const [incluirEliminados, setincluirEliminados] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null) // Almacena el ID cuando estamos editando
-
-  useEffect(() => {
-    console.log({ nuevoProducto })
-  }, [nuevoProducto.eliminado])
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
@@ -54,25 +36,24 @@ function Productos() {
 
   useEffect(() => {
     const fetchProductos = async () => {
-      const response = await fetch(PRODUCTOS_URL)
+      const response = await fetch(
+        `${PRODUCTOS_URL}?incluirEliminados=${incluirEliminados}`
+      )
       const data = await response.json()
-      console.log(data)
       setProductosList(data)
     }
     const fetchMarcas = async () => {
-      const response = await fetch('http://localhost:8080/api/marcas')
+      const response = await fetch(MARCAS_URL)
       const data = await response.json()
-      console.log(data)
       setMarcasList(data)
     }
     fetchMarcas()
     fetchProductos()
-  }, [isModalOpen])
+  }, [isModalOpen, incluirEliminados])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    console.log({ nuevoProducto })
     setNuevoProducto({
       ...nuevoProducto,
       [e.target.name]: e.target.value,
@@ -91,11 +72,11 @@ function Productos() {
     }
 
     try {
-      const url = editingId ? `${PRODUCTOS_URL}/${editingId}` : PRODUCTOS_URL
+      const URL = editingId ? `${PRODUCTOS_URL}/${editingId}` : PRODUCTOS_URL
 
       const method = editingId ? 'PUT' : 'POST'
 
-      const response = await fetch(url, {
+      const response = await fetch(URL, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +85,8 @@ function Productos() {
           nombre: nuevoProducto.nombre.trim(),
           descripcion: nuevoProducto.descripcion?.trim(),
           precio: nuevoProducto.precio,
-          marcaId: nuevoProducto.marca.id,
+          marca: nuevoProducto.marca,
+          eliminado: nuevoProducto.eliminado,
         }),
       })
 
@@ -134,30 +116,50 @@ function Productos() {
     }
   }
   const handleEdit = (producto: ProductoDTO) => {
-    setNuevoProducto({
-      nombre: producto.nombre.trim(),
-      descripcion: producto.descripcion?.trim(),
-      precio: producto.precio,
-      marca: producto.marca,
-      id: producto.id,
-      eliminado: producto.eliminado,
-    })
+    setNuevoProducto({ ...producto, marca: { ...producto.marca } })
     setIsEditing(true)
     setEditingId(producto.id)
     setIsModalOpen(true)
   }
   const handleDelete = async (id: number) => {
-    const confirmDelete = window.confirm(
-      '¿Estás seguro de que deseas eliminar este producto?'
-    )
+    const response = await fetch(`${PRODUCTOS_URL}/${id}`)
+    const data = await response.json()
+
+    const confirmDelete = window.confirm(`¿Estás seguro de que deseas ${
+      data.eliminado ? 'recuperar' : 'eliminar'
+    } este producto?
+    `)
     if (!confirmDelete) return
+    if (data.eliminado) {
+      await fetch(`${PRODUCTOS_URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eliminado: false,
+        }),
+      })
+      // const data = await response.json()
+
+      showToast({
+        message: 'El producto fue recuperado correctamente',
+        type: ToastType.SUCCESS,
+      })
+
+      // Actualizamos la lista de marcas
+      setProductosList(prev =>
+        prev.map(producto =>
+          producto.id === id ? { ...producto, eliminado: false } : producto
+        )
+      )
+      return
+    }
 
     try {
       const response = await fetch(`${PRODUCTOS_URL}/${id}`, {
         method: 'DELETE',
       })
-
-      console.log(response)
 
       if (!response.ok) {
         throw new Error('Error al eliminar el producto')
@@ -168,6 +170,14 @@ function Productos() {
         type: ToastType.SUCCESS,
       })
 
+      if (incluirEliminados) {
+        setProductosList(prev =>
+          prev.map(producto =>
+            producto.id === id ? { ...producto, eliminado: true } : producto
+          )
+        )
+        return
+      }
       setProductosList(prev => prev.filter(producto => producto.id !== id))
     } catch (error) {
       if (error instanceof Error) {
@@ -182,9 +192,18 @@ function Productos() {
   return (
     <>
       <section className="bg-gray-50 dark:bg-gray-900 p-8 antialiased flex-1 relative">
-        <div className="max-w-2xl">
+        <div className="max-w-5xl">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold dark:text-white">Productos</h2>
+            <div className="flex gap-2 items-center">
+              <label htmlFor="mostarEliminados">Mostar eliminados</label>
+              <input
+                type="checkbox"
+                name="mostarEliminados"
+                onChange={() => setincluirEliminados(!incluirEliminados)}
+                checked={incluirEliminados}
+              />
+            </div>
             <button
               onClick={() => {
                 setIsModalOpen(true)
@@ -301,22 +320,21 @@ function Productos() {
                     name="precio"
                     value={nuevoProducto.precio}
                     required
-                    autoFocus
                   />
                 </div>
                 <div className="mt-4">
                   <label className="block text-gray-50">Marca</label>
                   <select
                     value={nuevoProducto.marca?.id} // Asegúrate de que 'marca' esté definido
-                    onChange={e =>
+                    onChange={e => {
                       setNuevoProducto({
                         ...nuevoProducto,
                         marca: {
                           ...nuevoProducto.marca,
-                          id: Number(e.target.value),
+                          id: parseInt(e.target.value),
                         },
                       })
-                    }
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500">
                     {marcasList.map(marca => (
                       <option key={marca.id} value={marca.id}>
@@ -332,7 +350,7 @@ function Productos() {
                     placeholder="Descripción del producto"
                     onChange={handleInputChange}
                     name="descripcion"
-                    value={nuevoProducto.descripcion}
+                    value={nuevoProducto.descripcion || ''}
                     rows={5}
                   />
                 </div>
@@ -341,10 +359,11 @@ function Productos() {
                   <input
                     type="checkbox"
                     name="eliminado"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    onChange={() => {
                       setNuevoProducto({
                         ...nuevoProducto,
-                        eliminado: e.target.checked,
+                        marca: { ...nuevoProducto.marca },
+                        eliminado: !nuevoProducto.eliminado,
                       })
                     }}
                     checked={nuevoProducto.eliminado}

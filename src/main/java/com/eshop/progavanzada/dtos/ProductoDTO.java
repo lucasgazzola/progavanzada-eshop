@@ -1,11 +1,14 @@
 package com.eshop.progavanzada.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true, value = { "empty" })
 public class ProductoDTO {
   @Positive(message = "El id debe ser positivo")
   private Integer id;
@@ -15,7 +18,11 @@ public class ProductoDTO {
   private String nombre;
   private String descripcion;
   private Double precio;
-  private boolean eliminado;
-  private Integer marcaId;
+  private Boolean eliminado;
   private MarcaDTO marca; // Incluimos MarcaDTO en vez de solo marcaId
+
+  public boolean isEmpty() {
+    return this.id == null && this.nombre == null && this.descripcion == null && this.precio == null
+        && this.eliminado == null && this.marca == null && this.marca == null;
+  }
 }

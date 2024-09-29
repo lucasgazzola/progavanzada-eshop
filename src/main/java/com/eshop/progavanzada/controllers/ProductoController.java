@@ -22,8 +22,9 @@ public class ProductoController {
   private IProductoService service;
 
   @GetMapping
-  public ResponseEntity<List<ProductoDTO>> getAll() {
-    List<ProductoDTO> productos = this.service.listarProductos();
+  public ResponseEntity<List<ProductoDTO>> getAll(
+      @RequestParam(value = "incluirEliminados", required = false, defaultValue = "false") boolean incluirEliminados) {
+    List<ProductoDTO> productos = this.service.listarProductos(incluirEliminados);
     return ResponseEntity.ok(productos);
   }
 

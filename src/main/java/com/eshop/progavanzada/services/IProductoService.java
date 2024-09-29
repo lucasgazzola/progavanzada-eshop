@@ -11,13 +11,13 @@ import com.eshop.progavanzada.models.Producto;
 public interface IProductoService {
 
   @ElementCollection(targetClass = Integer.class)
-  public List<ProductoDTO> listarProductos();
+  public List<ProductoDTO> listarProductos(boolean incluirEliminados);
 
   public ProductoDTO buscarPorId(Integer id);
 
-  public ProductoDTO crearProducto(ProductoDTO marcaDTO);
+  public ProductoDTO crearProducto(ProductoDTO prodcutoDTO);
 
-  public ProductoDTO actualizarProducto(Integer id, UpdateProductoDTO marcaDTO);
+  public ProductoDTO actualizarProducto(Integer id, UpdateProductoDTO prodcutoDTO);
 
   public void eliminarProducto(Integer id);
 

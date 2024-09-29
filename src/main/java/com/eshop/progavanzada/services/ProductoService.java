@@ -24,8 +24,14 @@ public class ProductoService implements IProductoService {
   private MarcaRepository marcaRepository;
 
   @Override
-  public List<ProductoDTO> listarProductos() {
-    List<Producto> productos = this.repository.findByEliminado(false);
+  public List<ProductoDTO> listarProductos(boolean incluirEliminados) {
+    List<Producto> productos;
+
+    if (incluirEliminados) {
+      productos = this.repository.findAll();
+    } else {
+      productos = this.repository.findByEliminado(false);
+    }
 
     return productos.stream().map(ProductoMapper::toDTO).toList();
   }
@@ -33,7 +39,12 @@ public class ProductoService implements IProductoService {
   @Override
   public ProductoDTO buscarPorId(Integer id) {
     Producto producto = this.repository.findById(id)
-        .orElseThrow(() -> new NotFoundException("Producto con id " + id + " no encontrado"));
+        .orElse(null);
+
+    if (producto == null) {
+      throw new NotFoundException("Producto con id " + id + " no encontrado");
+    }
+
     return ProductoMapper.toDTO(producto);
   }
 
@@ -54,9 +65,9 @@ public class ProductoService implements IProductoService {
       }
     }
 
-    Marca marca = this.marcaRepository.findById(productoDTO.getMarcaId()).orElse(null);
+    Marca marca = this.marcaRepository.findById(productoDTO.getMarca().getId()).orElse(null);
     if (marca == null) {
-      throw new NotFoundException("La marca con id " + productoDTO.getMarcaId() + " no existe");
+      throw new NotFoundException("La marca con id " + productoDTO.getMarca().getId() + " no existe");
     }
 
     // Mapeamos el DTO a una instancia de Entity.
@@ -76,7 +87,7 @@ public class ProductoService implements IProductoService {
       throw new BadRequestException("No se han especificado campos a actualizar.");
     }
 
-    Producto producto = this.repository.findById(id).orElse(null);
+    Producto producto = ProductoMapper.toEntity(this.buscarPorId(id));
 
     if (producto == null) {
       throw new NotFoundException("El producto con id '" + id + "' no existe");
@@ -90,10 +101,18 @@ public class ProductoService implements IProductoService {
     if (productoDTO.getPrecio() != null) {
       producto.setPrecio(productoDTO.getPrecio());
     }
-    if (productoDTO.getMarcaId() != null) {
-      Marca marca = this.marcaRepository.findById(productoDTO.getMarcaId())
-          .orElseThrow(() -> new NotFoundException("La marca con id '" + productoDTO.getMarcaId() + "' no existe"));
+    if (productoDTO.getMarca() != null) {
+      Marca marca = this.marcaRepository.findById(productoDTO.getMarca().getId())
+          .orElseThrow(
+              () -> new NotFoundException("La marca con id '" + productoDTO.getMarca().getId() + "' no existe"));
       producto.setMarca(marca);
+    }
+    if (productoDTO.getEliminado() != null) {
+      if (productoDTO.getEliminado()) {
+        producto.eliminarLogico();
+      } else {
+        producto.recuperarLogico();
+      }
     }
     // Guardar los cambios en la base de datos.
     this.repository.save(producto);
@@ -104,11 +123,12 @@ public class ProductoService implements IProductoService {
 
   @Override
   public void eliminarProducto(Integer id) {
-    Producto producto = this.repository.findById(id).orElse(null);
-    if (producto == null) {
+    ProductoDTO productoDTO = this.buscarPorId(id);
+    if (productoDTO == null) {
       throw new NotFoundException("El id " + id + " recibido no existe");
 
     }
+    Producto producto = ProductoMapper.toEntity(productoDTO);
     producto.eliminarLogico();
     this.repository.save(producto);
   }
