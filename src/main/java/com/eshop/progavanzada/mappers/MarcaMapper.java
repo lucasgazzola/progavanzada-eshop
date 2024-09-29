@@ -22,7 +22,7 @@ public class MarcaMapper {
     marca.setId(marcaDTO.getId());
     marca.setDescripcion(marcaDTO.getDescripcion());
     marca.setNombre(marcaDTO.getNombre());
-    marca.setEliminado(marcaDTO.isEliminado());
+    marca.setEliminado(marcaDTO.getEliminado());
     return marca;
   }
 }

@@ -13,7 +13,6 @@ import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.repositories.MarcaRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MarcaService implements IMarcaService {
@@ -33,13 +32,13 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public MarcaDTO buscarPorId(Integer id) {
-    Optional<Marca> marca = this.repository.findById(id);
+    Marca marca = this.repository.findById(id).orElse(null);
 
-    if (marca.isEmpty()) {
+    if (marca == null) {
       throw new NotFoundException("La marca con id '" + id + "' no existe");
     }
 
-    return MarcaMapper.toDTO(marca.get());
+    return MarcaMapper.toDTO(marca);
   }
 
   @Override
@@ -79,8 +78,8 @@ public class MarcaService implements IMarcaService {
   @Override
   public MarcaDTO actualizarMarca(Integer id, UpdateMarcaDTO marcaDTO) {
     // Si todos los campos son nulos, lanza una excepción
-    // if (marcaDTO.isEmpty() && marcaDTO.isEliminado())
-    // throw new BadRequestException("No se han especificado campos a actualizar.");
+    if (marcaDTO.isEmpty())
+      throw new BadRequestException("No se han especificado campos a actualizar.");
 
     Marca marca = MarcaMapper.toEntity(this.buscarPorId(id));
 
@@ -89,15 +88,19 @@ public class MarcaService implements IMarcaService {
       marca.setDescripcion(marcaDTO.getDescripcion().trim());
     if (marcaDTO.getNombre() != null)
       marca.setNombre(marcaDTO.getNombre().trim());
-    if (marcaDTO.isEliminado()) {
-      marca.eliminarLogico();
-    } else {
-      marca.recuperarLogico();
+    if (marcaDTO.getEliminado() != null) {
+      if (marcaDTO.getEliminado()) {
+        marca.eliminarLogico();
+      } else {
+        marca.recuperarLogico();
+      }
     }
 
     List<Marca> marcas = this.repository.findAll();
-    Marca marcaRepetida = marcas.stream()
-        .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst().orElse(null);
+    Marca marcaRepetida = marcaDTO.getNombre() == null ? null
+        : marcas.stream()
+            .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst()
+            .orElse(null);
     if (marcaRepetida != null && !marcaRepetida.getId().equals(marca.getId())) {
       throw new DataConflictException(
           "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
