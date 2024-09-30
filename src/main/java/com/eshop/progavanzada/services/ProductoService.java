@@ -65,6 +65,9 @@ public class ProductoService implements IProductoService {
       }
     }
 
+    if (productoDTO.getMarca().getId() == null) {
+      throw new BadRequestException("La marca no puede estar vacia");
+    }
     Marca marca = this.marcaRepository.findById(productoDTO.getMarca().getId()).orElse(null);
     if (marca == null) {
       throw new NotFoundException("La marca con id " + productoDTO.getMarca().getId() + " no existe");

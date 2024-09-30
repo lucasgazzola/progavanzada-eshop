@@ -31,7 +31,11 @@ public class ProductoMapper {
     producto.setId(productoDTO.getId());
     producto.setDescripcion(productoDTO.getDescripcion());
     producto.setNombre(productoDTO.getNombre());
-    producto.setEliminado(productoDTO.getEliminado());
+    if (productoDTO.getEliminado() == null) {
+      producto.setEliminado(false);
+    } else {
+      producto.setEliminado(productoDTO.getEliminado());
+    }
     producto.setPrecio(productoDTO.getPrecio());
     producto.setMarca(MarcaMapper.toEntity(productoDTO.getMarca()));
     return producto;
