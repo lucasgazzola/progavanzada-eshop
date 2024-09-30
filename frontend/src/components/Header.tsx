@@ -14,9 +14,9 @@ function Header() {
           <li>
             <LinkItem to={'/productos'} text={'Productos'} />
           </li>
-          <li>
+          {/* <li>
             <LinkItem to={'/categorias'} text={'Categorias'} />
-          </li>
+          </li> */}
         </ul>
       </nav>
     </header>

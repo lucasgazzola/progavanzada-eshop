@@ -19,6 +19,10 @@ function Marcas() {
   const [editingId, setEditingId] = useState<number | null>(null) // Almacena el ID cuando estamos editando
 
   useEffect(() => {
+    document.title = 'MegaStore/Marcas'
+  }, [])
+
+  useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && isModalOpen) {
         setIsModalOpen(false)
