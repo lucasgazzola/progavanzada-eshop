@@ -43,13 +43,31 @@ function Productos() {
       setProductosList(data)
     }
     const fetchMarcas = async () => {
-      const response = await fetch(MARCAS_URL)
-      const data = await response.json()
-      setMarcasList(data)
+      const response = await fetch(`${MARCAS_URL}?incluirEliminados=false`)
+      let marcas = (await response.json()) as Array<MarcaDTO>
+
+      // Si estamos editando un producto y la marca está eliminada, la agregamos a la lista
+      if (isEditing && nuevoProducto.marca?.id) {
+        const marcaEliminada = await fetch(
+          `${MARCAS_URL}/${nuevoProducto.marca.id}`
+        )
+        const marcaData = (await marcaEliminada.json()) as MarcaDTO
+
+        if (marcaData.eliminado) {
+          const marcaExisteEnLista = marcas.some(
+            marca => marca.id === marcaData.id
+          )
+          if (!marcaExisteEnLista) {
+            marcas = marcas.concat(marcaData)
+          }
+        }
+      }
+      setMarcasList(marcas)
     }
     fetchMarcas()
     fetchProductos()
-  }, [isModalOpen, incluirEliminados])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isModalOpen, incluirEliminados, isEditing])
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -71,6 +89,13 @@ function Productos() {
       return
     }
 
+    if (nuevoProducto.marca.id == 0) {
+      showToast({
+        message: 'Debe seleccionar una marca',
+        type: ToastType.ERROR,
+      })
+      return
+    }
     try {
       const URL = editingId ? `${PRODUCTOS_URL}/${editingId}` : PRODUCTOS_URL
 
@@ -117,6 +142,16 @@ function Productos() {
   }
   const handleEdit = (producto: ProductoDTO) => {
     setNuevoProducto({ ...producto, marca: { ...producto.marca } })
+    if (producto.marca.eliminado) {
+      const marcaExisteEnLista = marcasList.some(
+        marca => marca.id === producto.marca.id
+      )
+
+      // Solo agregar la marca eliminada si no está ya en la lista
+      if (!marcaExisteEnLista) {
+        setMarcasList(prevMarcasList => [...prevMarcasList, producto.marca])
+      }
+    }
     setIsEditing(true)
     setEditingId(producto.id)
     setIsModalOpen(true)
@@ -325,8 +360,8 @@ function Productos() {
                 <div className="mt-4">
                   <label className="block text-gray-50">Marca</label>
                   <select
-                    value={nuevoProducto.marca?.id} // Asegúrate de que 'marca' esté definido
-                    onChange={e => {
+                    value={nuevoProducto.marca?.id || ''} // Asegúrate de que 'marca' esté definido
+                    onChange={e =>
                       setNuevoProducto({
                         ...nuevoProducto,
                         marca: {
@@ -334,11 +369,14 @@ function Productos() {
                           id: parseInt(e.target.value),
                         },
                       })
-                    }}
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500">
+                    <option value="" disabled>
+                      Seleccione una marca
+                    </option>
                     {marcasList.map(marca => (
                       <option key={marca.id} value={marca.id}>
-                        {marca.nombre}
+                        {marca.nombre} {marca.eliminado ? '(Eliminada)' : ''}
                       </option>
                     ))}
                   </select>

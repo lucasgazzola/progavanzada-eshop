@@ -31,7 +31,9 @@ function ProductoItem({
         {descripcion}
       </td>
       <td className="px-4 py-3 max-w-[12rem] truncate">{precio}</td>
-      <td className="px-4 py-3 max-w-[12rem] truncate">{marca.nombre}</td>
+      <td className="px-4 py-3 max-w-[12rem] truncate">
+        {marca.nombre} {marca.eliminado ? '(Eliminado)' : ''}
+      </td>
       <td className="px-4 py-3 max-w-[12rem] truncate">
         {eliminado ? 'Eliminado' : 'Activo'}
       </td>

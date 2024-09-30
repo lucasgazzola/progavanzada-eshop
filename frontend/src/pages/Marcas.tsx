@@ -58,6 +58,7 @@ function Marcas() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
+    console.log(nuevaMarca)
     if (nuevaMarca.nombre.trim() === '') {
       showToast({
         message: 'El nombre no puede estar vacío',
@@ -113,7 +114,11 @@ function Marcas() {
 
   // Función para abrir el modal de edición
   const handleEdit = (marca: MarcaDTO) => {
-    setNuevaMarca({ ...marca })
+    setNuevaMarca({
+      nombre: marca.nombre,
+      descripcion: marca.descripcion || '',
+      eliminado: marca.eliminado,
+    })
     setIsEditing(true)
     setEditingId(marca.id)
     setIsModalOpen(true)
