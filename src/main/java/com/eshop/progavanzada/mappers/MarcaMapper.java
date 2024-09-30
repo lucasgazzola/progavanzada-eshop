@@ -22,8 +22,10 @@ public class MarcaMapper {
     marca.setId(marcaDTO.getId());
     marca.setDescripcion(marcaDTO.getDescripcion());
     marca.setNombre(marcaDTO.getNombre());
-    if (marcaDTO.getEliminado() == null) {
 
+    // Si el campo eliminado no es nulo, lo setteamos
+    // De lo contrario, el campo eliminado es falso por defecto
+    if (marcaDTO.getEliminado() == null) {
       marca.setEliminado(false);
     } else {
       marca.setEliminado(marcaDTO.getEliminado());

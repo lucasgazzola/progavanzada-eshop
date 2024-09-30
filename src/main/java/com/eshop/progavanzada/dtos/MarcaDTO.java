@@ -24,7 +24,6 @@ public class MarcaDTO {
 
   private String descripcion;
 
-  // @JsonIgnore
   public boolean isEmpty() {
     return this.nombre == null && this.eliminado == null && this.descripcion == null;
   }

@@ -21,6 +21,8 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public List<MarcaDTO> listarMarcas(boolean incluirEliminados) {
+    // Buscamos todas las marcas o solo las no eliminadas
+    // Dependiendo de si incluirEliminados es true o false
     List<Marca> marcas;
     if (incluirEliminados) {
       marcas = this.repository.findAll();
@@ -32,27 +34,32 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public MarcaDTO buscarPorId(Integer id) {
+    // Buscamos la marca por id
+    // Si el id de la marca no existe, lanza una excepción
     Marca marca = this.repository.findById(id).orElse(null);
-
     if (marca == null) {
       throw new NotFoundException("La marca con id '" + id + "' no existe");
     }
-
     return MarcaMapper.toDTO(marca);
   }
 
   @Override
   public MarcaDTO crearMarca(MarcaDTO marcaDTO) {
-    // Buscamos todas las marcas no eliminadas
+    // Buscamos todas las marcas
     List<Marca> marcas = this.repository.findAll();
 
     // Eliminamos espacios en blanco
     // Reemplazamos múltiples espacios intermedios por uno solo
     marcaDTO.setNombre(marcaDTO.getNombre().trim().replaceAll("\\s+", " "));
 
+    // Si luego de eliminar los espacios en blanco, el nombre está vacío, lanza una
+    // excepción
     if (marcaDTO.getNombre().equals("")) {
       throw new BadRequestException("El nombre no puede estar vacío");
     }
+
+    // Si la descripción no es nula ni vacia, le quitamos los espaciones en blanco
+    // De lo contrario, la descripción es nula
     if (marcaDTO.getDescripcion() != null) {
       if (!marcaDTO.getDescripcion().isEmpty()) {
         marcaDTO.setDescripcion(marcaDTO.getDescripcion().trim());
@@ -61,15 +68,19 @@ public class MarcaService implements IMarcaService {
       }
     }
 
+    // Comparamos la marca a agregar con todas las existentes
+    // La comparación se realiza con ambos nombres en minúsculas
     Marca marcaRepetida = marcas.stream()
         .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst().orElse(null);
 
-    // Si la marca no existe, la creamos
+    // Si la marca ya existe, lanzamos una excepción
     if (marcaRepetida != null) {
       throw new DataConflictException(
           "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
     }
 
+    // Si no hay marca repetida, creamos la marca
+    // Agregamos la marca a la lista
     Marca marca = MarcaMapper.toEntity(marcaDTO);
     this.repository.save(marca);
     return MarcaMapper.toDTO(marca);
@@ -77,17 +88,21 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public MarcaDTO actualizarMarca(Integer id, UpdateMarcaDTO marcaDTO) {
-    // Si todos los campos son nulos, lanza una excepción
+    // Si todos los campos del cuerpo de la petición son nulos, lanza una excepción
     if (marcaDTO.isEmpty())
       throw new BadRequestException("No se han especificado campos a actualizar.");
 
+    // Buscamos la marca por id
     Marca marca = MarcaMapper.toEntity(this.buscarPorId(id));
 
-    // Actualizar los campos.
+    // Actualizamos los campos de la marca con el id especificado
     if (marcaDTO.getDescripcion() != null)
       marca.setDescripcion(marcaDTO.getDescripcion().trim());
     if (marcaDTO.getNombre() != null)
       marca.setNombre(marcaDTO.getNombre().trim());
+
+    // Si el campo eliminado no es nulo, nos fijamos si es verdadero o falso
+    // Y actualizamos el estado de la marca
     if (marcaDTO.getEliminado() != null) {
       if (marcaDTO.getEliminado()) {
         marca.eliminarLogico();
@@ -96,15 +111,23 @@ public class MarcaService implements IMarcaService {
       }
     }
 
+    // Buscamos todas las marcas
     List<Marca> marcas = this.repository.findAll();
+
+    // Comparamos la marca a agregar con todas las existentes
+    // Si en la marca no se actualiza el nombre, no hay que hacer la comprobación
     Marca marcaRepetida = marcaDTO.getNombre() == null ? null
         : marcas.stream()
             .filter(m -> m.getNombre().toLowerCase().equals(marcaDTO.getNombre().toLowerCase())).findFirst()
             .orElse(null);
+
+    // Si la marca ya existe y no es la misma que la que queremos actualizar, lanza
+    // una excepción
     if (marcaRepetida != null && !marcaRepetida.getId().equals(marca.getId())) {
       throw new DataConflictException(
           "La marca con nombre '" + marcaDTO.getNombre() + "' ya existe");
     }
+
     // Guardar los cambios en la base de datos.
     this.repository.save(marca);
 
@@ -114,11 +137,15 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public void eliminarMarca(Integer id) {
+    // Buscamos la marca por id y si no existe, lanza una excepción
     MarcaDTO marcaDTO = this.buscarPorId(id);
     if (marcaDTO == null) {
       throw new NotFoundException("El id recibido no existe: " + id);
 
     }
+
+    // Si el id existe, eliminamos la marca de manera lógica
+    // Luego, guardamos los cambios
     Marca marca = MarcaMapper.toEntity(marcaDTO);
     marca.eliminarLogico();
     this.repository.save(marca);
@@ -126,6 +153,8 @@ public class MarcaService implements IMarcaService {
 
   @Override
   public void recuperarMarca(Marca marca) {
+    // Recuperamos la marca setteando su estado eliminado a verdadero
+    // Luego, guardamos los cambios
     marca.recuperarLogico();
     this.repository.save(marca);
   }
