@@ -72,8 +72,11 @@ public class ProductoService implements IProductoService {
       }
     }
 
-    // Si el id de la marca del producto es nula
+    // Si el id de la marca del producto es nula o no existe en absoluto
     // Lanza una excepción
+    if (productoDTO.getMarca() == null) {
+      throw new BadRequestException("La marca no puede estar vacia");
+    }
     if (productoDTO.getMarca().getId() == null) {
       throw new BadRequestException("La marca no puede estar vacia");
     }

@@ -2,6 +2,7 @@ package com.eshop.progavanzada.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -93,7 +94,38 @@ public class CustomExceptionHandler {
     List<String> errors = new ArrayList<>();
     errors.add(ex.getMessage());
 
-    Map<String, Object> body = this.buildBadRequestResponseBody(HttpStatus.BAD_REQUEST, errors, request);
+    Map<String, Object> body = this.buildBadRequestResponseBody(HttpStatus.NOT_FOUND, errors, request);
     return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
   }
+
+  @ExceptionHandler(JsonWebTokenValidationException.class)
+  public ResponseEntity<Object> handleJsonWebTokenValidationException(JsonWebTokenValidationException ex,
+      WebRequest request) {
+    List<String> errors = new ArrayList<>();
+    errors.add(ex.getMessage());
+
+    Map<String, Object> body = this.buildBadRequestResponseBody(HttpStatus.UNAUTHORIZED, errors, request);
+    return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+  }
+
+  @ExceptionHandler(JsonWebTokenCreationException.class)
+  public ResponseEntity<Object> handleJsonWebTokenCreationException(JsonWebTokenCreationException ex,
+      WebRequest request) {
+    List<String> errors = new ArrayList<>();
+    errors.add(ex.getMessage());
+
+    Map<String, Object> body = this.buildBadRequestResponseBody(HttpStatus.INTERNAL_SERVER_ERROR, errors, request);
+    return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex,
+      WebRequest request) {
+    List<String> errors = new ArrayList<>();
+    errors.add("No existe el rol especificado. Debe ser 'ADMIN' o 'USER'.");
+
+    Map<String, Object> body = this.buildBadRequestResponseBody(HttpStatus.BAD_REQUEST, errors, request);
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 
 @Data
@@ -17,6 +18,8 @@ public class ProductoDTO {
   @NotEmpty(message = "El nombre no puede estar vacío")
   private String nombre;
   private String descripcion;
+
+  @PositiveOrZero(message = "El precio debe ser positivo o cero")
   private Double precio;
   private Boolean eliminado;
   private MarcaDTO marca; // Incluimos MarcaDTO en vez de solo marcaId
