@@ -2,12 +2,17 @@ package com.eshop.progavanzada.config.auth;
 
 import java.io.IOException;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.eshop.progavanzada.models.User;
 import com.eshop.progavanzada.repositories.UserRepository;
 
 import jakarta.servlet.FilterChain;
@@ -28,9 +33,11 @@ public class SecurityFilter extends OncePerRequestFilter {
       throws ServletException, IOException {
     var token = this.recoverToken(request);
     if (token != null) {
-      var username = tokenService.validateToken(token);
-      var user = userRepository.findByUsername(username);
+      String username = tokenService.validateToken(token);
+      UserDetails user = (UserDetails) userRepository.findByUsername(username);
+
       var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
     filterChain.doFilter(request, response);

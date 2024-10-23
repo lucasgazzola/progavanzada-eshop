@@ -19,6 +19,7 @@ import com.eshop.progavanzada.config.auth.SecurityFilter;
 @Configuration
 @EnableWebSecurity
 public class AuthConfig {
+
   @Autowired
   SecurityFilter securityFilter;
 

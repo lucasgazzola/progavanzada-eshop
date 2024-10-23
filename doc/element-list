@@ -1,0 +1,12 @@
+com.eshop.progavanzada
+com.eshop.progavanzada.config
+com.eshop.progavanzada.config.auth
+com.eshop.progavanzada.constants
+com.eshop.progavanzada.controllers
+com.eshop.progavanzada.dtos
+com.eshop.progavanzada.enums
+com.eshop.progavanzada.exceptions
+com.eshop.progavanzada.mappers
+com.eshop.progavanzada.models
+com.eshop.progavanzada.repositories
+com.eshop.progavanzada.services

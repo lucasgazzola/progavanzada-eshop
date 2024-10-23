@@ -3,8 +3,12 @@ package com.eshop.progavanzada.Auth;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,6 +17,7 @@ import com.eshop.progavanzada.dtos.SignUpDTO;
 import com.eshop.progavanzada.enums.UserRole;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
+import com.eshop.progavanzada.repositories.UserRepository;
 import com.eshop.progavanzada.services.AuthService;
 
 @SpringBootTest
@@ -21,37 +26,63 @@ public class SignUpServiceTest {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  @Autowired
-  private AuthService authService; // Inyectamos el mock en AuthService
+  // Simula el repositorio de usuarios para no acceder a la base de datos real
+  @Mock
+  private UserRepository userRepository;
 
+  // Inyectamos el mock en AuthService
+  @InjectMocks
+  private AuthService authService;
+
+  @DisplayName("Registrar usuario exitoso con la longitud minima de la contraseña")
   @Test
   void testRegistrarUsuario_Exito_ExactMinLengthPassword() {
+    // Generamos un número aleatorio para evitar conflictos con otros tests
     int randomNumber = (int) (Math.random() * 99999999);
 
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Contraseña con longitud mínima
     SignUpDTO signUpDTO = new SignUpDTO();
-
     signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);
 
+    // Creamos un objeto User con los datos del usuario
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    // Simulamos el guardado del usuario en la base de datos
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
     User user = this.authService.signUp(signUpDTO);
 
+    // Verificamos que los datos del usuario sean correctos
     assertEquals(user.getUsername(), signUpDTO.getUsername());
     assertTrue(passwordEncoder.matches(signUpDTO.getPassword(), user.getPassword()));
     assertEquals(user.getRol(), signUpDTO.getRol());
   }
 
+  @DisplayName("Registro usuario exitoso con la longitud máxima de la contraseña")
   @Test
   void testRegistrarUsuario_Exito_ExactMaxLengthPassword() {
     int randomNumber = (int) (Math.random() * 99999999);
 
     SignUpDTO signUpDTO = new SignUpDTO();
 
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Contraseña con longitud máxima
     signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("123456789012345678901234");
     signUpDTO.setRol(UserRole.USER);
+
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
 
     User user = this.authService.signUp(signUpDTO);
 
@@ -60,121 +91,131 @@ public class SignUpServiceTest {
     assertEquals(user.getRol(), signUpDTO.getRol());
   }
 
+  @DisplayName("Registro usuario no exitoso por no contener email")
   @Test
   void testRegistrarUsuario_NoEmail() {
-
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Sin email
     SignUpDTO signUpDTO = new SignUpDTO();
-
     signUpDTO.setNombre("John Doe");
     signUpDTO.setPassword("password");
     signUpDTO.setRol(UserRole.USER);
 
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
     assertThrows(BadRequestException.class, () -> this.authService.signUp(signUpDTO));
   }
 
+  @DisplayName("Registro usuario no exitoso por contener email con formato incorrecto")
   @Test
   void testRegistrarUsuario_BadEmail() {
-    int randomNumber = (int) (Math.random() * 99999999);
-
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Con email mal formateado
     SignUpDTO signUpDTO = new SignUpDTO();
-
     signUpDTO.setNombre("John Doe");
-    signUpDTO.setUsername("john.doe" + randomNumber);
+    signUpDTO.setUsername("john.doe");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);
 
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
+    // Esperamos un BadRequestException
     assertThrows(BadRequestException.class, () -> this.authService.signUp(signUpDTO));
   }
 
+  @DisplayName("Registro usuario no exitoso por no contener nombre")
   @Test
   void testRegistrarUsuario_NoName() {
     int randomNumber = (int) (Math.random() * 99999999);
 
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Sin nombre
     SignUpDTO signUpDTO = new SignUpDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("password");
     signUpDTO.setRol(UserRole.USER);
 
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
+    // Esperamos un BadRequestException
     assertThrows(BadRequestException.class, () -> this.authService.signUp(signUpDTO));
   }
 
+  @DisplayName("Registro usuario no exitoso por no contener contraseña")
   @Test
   void testRegistrarUsuario_NoPassword() {
     int randomNumber = (int) (Math.random() * 99999999);
 
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Sin contraseña
     SignUpDTO signUpDTO = new SignUpDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setNombre("John Doe");
     signUpDTO.setRol(UserRole.USER);
 
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(), null, signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
+    // Esperamos un BadRequestException
     assertThrows(BadRequestException.class, () -> this.authService.signUp(signUpDTO));
   }
 
+  @DisplayName("Registro usuario no exitoso por contraseña muy corta")
   @Test
   void testRegistrarUsuario_TooShortPassword() {
     int randomNumber = (int) (Math.random() * 99999999);
 
+    // Creamos un objeto SignUpDTO con los datos del usuario
+    // Contraseña con longitud menor a la mínima
     SignUpDTO signUpDTO = new SignUpDTO();
-
     signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("1234567");
     signUpDTO.setRol(UserRole.USER);
 
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
+    // Esperamos un BadRequestException
     assertThrows(BadRequestException.class, () -> this.authService.signUp(signUpDTO));
   }
 
+  @DisplayName("Registro usuario no exitoso por contraseña muy larga")
   @Test
   void testRegistrarUsuario_TooLongPassword() {
     int randomNumber = (int) (Math.random() * 99999999);
 
+    // Sin contraseña
+    // Contraseña con longitud mayor a la máxima
     SignUpDTO signUpDTO = new SignUpDTO();
-
     signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("1234567890123456789012345");
     signUpDTO.setRol(UserRole.USER);
 
+    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+        passwordEncoder.encode(signUpDTO.getPassword()),
+        signUpDTO.getRol());
+
+    when(userRepository.save(newUser)).thenReturn(newUser);
+
+    // Esperamos un BadRequestException
     assertThrows(BadRequestException.class, () -> this.authService.signUp(signUpDTO));
   }
-
-  // @Test
-  // @Timeout(value = 500, unit = TimeUnit.MILLISECONDS) // El test fallará si
-  // toma más de 500ms
-  // void testCalcularIMC_ExitosoTimeout() {
-  // // Arrange
-  // double peso = 70.0;
-  // double altura = 1.75;
-
-  // // Act
-  // double imc = imcService.calcularIMC(peso, altura);
-
-  // // Assert
-  // assertEquals(22.86, imc, 0.01);
-  // }
-
-  // @Test
-  // void testCalcularIMC_DentroDelTiempoEsperado() {
-  // // Arrange
-  // double peso = 70.0;
-  // double altura = 1.75;
-
-  // // Medimos el tiempo antes de la ejecución
-  // long startTime = System.nanoTime();
-
-  // // Act
-  // double imc = imcService.calcularIMC(peso, altura);
-
-  // // Medimos el tiempo después de la ejecución
-  // long endTime = System.nanoTime();
-
-  // // Calculamos el tiempo en milisegundos
-  // long duration = (endTime - startTime) / 1_000_000; // Convertir a
-  // milisegundos
-
-  // // Assert
-  // assertTrue(duration < 500, "La ejecución del método tomó demasiado tiempo: "
-  // + duration + " ms");
-  // }
-
 }
