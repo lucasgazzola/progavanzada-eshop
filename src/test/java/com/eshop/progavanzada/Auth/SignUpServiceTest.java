@@ -23,9 +23,6 @@ import com.eshop.progavanzada.services.AuthService;
 @SpringBootTest
 public class SignUpServiceTest {
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
   // Simula el repositorio de usuarios para no acceder a la base de datos real
   @Mock
   private UserRepository userRepository;
@@ -34,7 +31,10 @@ public class SignUpServiceTest {
   @InjectMocks
   private AuthService authService;
 
-  @DisplayName("Registrar usuario exitoso con la longitud minima de la contraseña")
+  @Autowired
+  private PasswordEncoder passwordEncoder;
+
+  @DisplayName("Registrar usuario exitoso con la longitud mínima de la contraseña")
   @Test
   void testRegistrarUsuario_Exito_ExactMinLengthPassword() {
     // Generamos un número aleatorio para evitar conflictos con otros tests

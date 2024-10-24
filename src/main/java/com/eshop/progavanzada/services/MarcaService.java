@@ -47,6 +47,13 @@ public class MarcaService implements IMarcaService {
   public MarcaDTO crearMarca(MarcaDTO marcaDTO) {
     // Buscamos todas las marcas
     List<Marca> marcas = this.repository.findAll();
+    if (marcaDTO.getNombre() == null) {
+      throw new BadRequestException("El nombre no puede ser nulo");
+    }
+
+    if (marcaDTO.getDescripcion() == null) {
+      marcaDTO.setDescripcion("");
+    }
 
     // Eliminamos espacios en blanco
     // Reemplazamos múltiples espacios intermedios por uno solo
