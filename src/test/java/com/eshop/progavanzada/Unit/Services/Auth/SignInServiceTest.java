@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.Auth;
+package com.eshop.progavanzada.Unit.Services.Auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.Auth;
+package com.eshop.progavanzada.Unit.Services.Auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -117,6 +117,7 @@ public class SignUpServiceTest {
     // Con email mal formateado
     SignUpDTO signUpDTO = new SignUpDTO();
     signUpDTO.setNombre("John Doe");
+    // Username debe ser un email válido
     signUpDTO.setUsername("john.doe");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);

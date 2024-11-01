@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.Marcas;
+package com.eshop.progavanzada.Unit.Services.Marcas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

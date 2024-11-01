@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,7 +19,7 @@ import com.eshop.progavanzada.config.auth.SecurityFilter;
 
 @Configuration
 @EnableWebSecurity
-public class AuthConfig {
+public class SecurityConfig {
 
   @Autowired
   SecurityFilter securityFilter;
@@ -29,10 +30,12 @@ public class AuthConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
+
             .requestMatchers(HttpMethod.POST, "/api/auth/*").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/productos", "/api/marcas").permitAll()
             .requestMatchers(HttpMethod.POST, "/api/productos", "/api/marcas").hasRole("ADMIN")
             .anyRequest().authenticated())
+        .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
