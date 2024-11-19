@@ -1,8 +1,9 @@
 import LinkItem from './LinkItem'
+import ThemeToggle from './ThemeToggle'
 
 function Header() {
   return (
-    <header className="bg-[#1F2937] font-bold w-full flex items-center justify-start px-6 h-12">
+    <header className="bg-[#1F2937] font-bold w-full flex items-center justify-between px-6 h-12">
       <nav>
         <ul className="flex gap-6">
           <li>
@@ -19,6 +20,10 @@ function Header() {
           </li> */}
         </ul>
       </nav>
+      <div>
+        <ThemeToggle />
+        <LinkItem to={'/login'} text={'Login'} />
+      </div>
     </header>
   )
 }

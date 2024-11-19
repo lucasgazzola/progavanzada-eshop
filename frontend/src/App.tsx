@@ -6,19 +6,25 @@ import Productos from './pages/Productos'
 
 import './App.css'
 import Home from './pages/Home'
+import Footer from './components/Footer'
+import NotFoundPage from './pages/NotFoundPage'
+import Login from './pages/Login'
 
 function App() {
   return (
-    <div className="flex flex-col items-center min-h-screen">
+    <div className="flex flex-col bg-[#dedede] dark:bg-[#151515] items-center min-h-screen w-full">
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/marcas" element={<Marcas />} />
         <Route path="/productos" element={<Productos />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<NotFoundPage />} />
         {/* <Route path="/categorias" element={<p>Categorias</p>} /> */}
       </Routes>
       {/* <ListaDeMarcas />
       <AgregarMarca /> */}
+      <Footer />
     </div>
   )
 }
