@@ -43,13 +43,12 @@ public class SignUpServiceTest {
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Contraseña con longitud mínima
     SignUpDTO signUpDTO = new SignUpDTO();
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);
 
     // Creamos un objeto User con los datos del usuario
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 
@@ -73,12 +72,11 @@ public class SignUpServiceTest {
 
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Contraseña con longitud máxima
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("123456789012345678901234");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 
@@ -97,11 +95,10 @@ public class SignUpServiceTest {
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Sin email
     SignUpDTO signUpDTO = new SignUpDTO();
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setPassword("password");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 
@@ -116,13 +113,12 @@ public class SignUpServiceTest {
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Con email mal formateado
     SignUpDTO signUpDTO = new SignUpDTO();
-    signUpDTO.setNombre("John Doe");
     // Username debe ser un email válido
     signUpDTO.setUsername("john.doe");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 
@@ -144,7 +140,7 @@ public class SignUpServiceTest {
     signUpDTO.setPassword("password");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 
@@ -163,10 +159,9 @@ public class SignUpServiceTest {
     // Sin contraseña
     SignUpDTO signUpDTO = new SignUpDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(), null, signUpDTO.getRol());
+    User newUser = new User(signUpDTO.getUsername(), null, signUpDTO.getRol());
 
     when(userRepository.save(newUser)).thenReturn(newUser);
 
@@ -182,12 +177,11 @@ public class SignUpServiceTest {
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Contraseña con longitud menor a la mínima
     SignUpDTO signUpDTO = new SignUpDTO();
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("1234567");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 
@@ -205,12 +199,11 @@ public class SignUpServiceTest {
     // Sin contraseña
     // Contraseña con longitud mayor a la máxima
     SignUpDTO signUpDTO = new SignUpDTO();
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("1234567890123456789012345");
     signUpDTO.setRol(UserRole.USER);
 
-    User newUser = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    User newUser = new User(signUpDTO.getUsername(),
         passwordEncoder.encode(signUpDTO.getPassword()),
         signUpDTO.getRol());
 

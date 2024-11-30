@@ -15,7 +15,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,16 +37,21 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String nombre;
   private String username;
 
   private String password;
 
+  @Builder.Default
+  private boolean eliminado = false;
+
+  @OneToOne
+  @JoinColumn(name = "perfilId")
+  private Perfil perfil;
+
   @Enumerated(EnumType.STRING)
   private UserRole rol;
 
-  public User(String nombre, String username, String password, UserRole rol) {
-    this.nombre = nombre;
+  public User(String username, String password, UserRole rol) {
     this.username = username;
     this.password = password;
     this.rol = rol;
@@ -82,5 +88,13 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
+  }
+
+  public void eliminarLogico() {
+    this.setEliminado(true);
+  }
+
+  public void recuperarLogico() {
+    this.setEliminado(false);
   }
 }

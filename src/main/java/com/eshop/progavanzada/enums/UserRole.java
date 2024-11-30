@@ -2,7 +2,8 @@ package com.eshop.progavanzada.enums;
 
 public enum UserRole {
   ADMIN("ADMIN"),
-  USER("USER");
+  USER("USER"),
+  AUDITOR("AUDITOR");
 
   private String role;
 

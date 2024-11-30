@@ -53,11 +53,10 @@ public class SignInServiceTest {
     SignUpDTO signUpDTO = new SignUpDTO();
     signUpDTO.setUsername("john.doe@example.com");
     signUpDTO.setPassword("12345678");
-    signUpDTO.setNombre("John Doe");
     signUpDTO.setRol(UserRole.USER);
 
     // Crear un usuario simulado
-    this.user = new User(signUpDTO.getNombre(), signUpDTO.getUsername(),
+    this.user = new User(signUpDTO.getUsername(),
         signUpDTO.getPassword(), signUpDTO.getRol());
 
     this.authUser = new UsernamePasswordAuthenticationToken(user,

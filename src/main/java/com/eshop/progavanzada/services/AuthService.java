@@ -42,9 +42,6 @@ public class AuthService implements UserDetailsService {
   }
 
   public User signUp(SignUpDTO data) throws BadRequestException {
-    if (data.getNombre() == null || data.getNombre().isEmpty()) {
-      throw new BadRequestException("El nombre es requerido");
-    }
     if (data.getPassword() == null || data.getPassword().isEmpty()) {
       throw new BadRequestException("La contraseña es requerida");
     }
@@ -67,7 +64,7 @@ public class AuthService implements UserDetailsService {
     }
 
     String encryptedPassword = new BCryptPasswordEncoder().encode(data.getPassword());
-    User newUser = new User(data.getNombre(), data.getUsername(), encryptedPassword, data.getRol());
+    User newUser = new User(data.getUsername(), encryptedPassword, data.getRol());
     return userRepository.save(newUser);
   }
 

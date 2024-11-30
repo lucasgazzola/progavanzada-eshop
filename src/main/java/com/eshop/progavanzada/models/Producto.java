@@ -1,5 +1,7 @@
 package com.eshop.progavanzada.models;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -19,6 +21,18 @@ public class Producto {
   private String descripcion;
 
   private Double precio;
+
+  private Categoria categoria;
+  private Subcategoria subcategoria;
+
+  private List<String> imagenes;
+
+  @OneToMany(mappedBy = "producto")
+  private List<VarianteProducto> variantesProducto;
+
+  @ManyToMany
+  @JoinTable(name = "promocion_producto")
+  private List<Promocion> promociones;
 
   @ManyToOne
   @JoinColumn(name = "marcaId", nullable = false)

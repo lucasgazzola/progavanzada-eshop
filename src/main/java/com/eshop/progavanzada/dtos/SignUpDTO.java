@@ -13,9 +13,7 @@ import lombok.Data;
 @Data
 public class SignUpDTO {
 
-  @NotNull(message = "El nombre es obligatorio")
-  @NotEmpty(message = "El nombre no puede estar vacío")
-  private String nombre;
+  // TODO: REMOVER LA PARTE DEL NOMBRE DEL FRONTEND
 
   @NotNull(message = "El email es obligatorio")
   @Email(message = "El email no es válido")
