@@ -9,6 +9,7 @@ function Login() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
     // Aquí puedes agregar la lógica de autenticación
+
     console.log('Username:', username)
     console.log('Password:', password)
     navigate('/')

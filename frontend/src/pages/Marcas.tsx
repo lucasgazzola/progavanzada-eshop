@@ -1,51 +1,26 @@
-import { useEffect, useState } from 'react'
-import { MarcaDTO } from '../dtos/MarcaDTO'
-import { MARCA_INICIAL, MARCAS_URL } from '../constants'
+import { useEffect } from 'react'
+import { MARCA_INICIAL } from '../constants'
 import Modal from '../components/Modal'
 import MarcasTable from '../components/MarcasTable'
+import useAppContext from '../hooks/useAppContext'
+import useMarcasContext from '../hooks/useMarcasContext'
 
 function Marcas() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [nuevaMarca, setNuevaMarca] = useState<Omit<MarcaDTO, 'id'>>({
-    nombre: '',
-    descripcion: '',
-    eliminado: false,
-  })
-  const [marcasList, setMarcasList] = useState<Array<MarcaDTO>>([])
-  const [incluirEliminados, setIncluirEliminados] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
-  const [editingId, setEditingId] = useState<number | null>(null) // Almacena el ID cuando estamos editando
+  const { isModalOpen, setIsModalOpen } = useAppContext()
+  const {
+    incluirEliminados,
+    setIncluirEliminados,
+    setIsEditing,
+    setNuevaMarca,
+    isEditing,
+    nuevaMarca,
+    editingId,
+    setEditingId,
+  } = useMarcasContext()
 
   useEffect(() => {
     document.title = 'MegaStore/Marcas'
   }, [])
-
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isModalOpen) {
-        setIsModalOpen(false)
-        setIsEditing(false)
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-
-    // Limpieza del evento al desmontar el componente
-    return () => {
-      document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isModalOpen])
-
-  useEffect(() => {
-    const fetchMarcas = async () => {
-      const response = await fetch(
-        `${MARCAS_URL}?incluirEliminados=${incluirEliminados}`
-      )
-      const data = await response.json()
-      setMarcasList(data)
-    }
-    fetchMarcas()
-  }, [isModalOpen, incluirEliminados])
 
   return (
     <>
@@ -87,15 +62,7 @@ function Marcas() {
           </div>
           <div className="mt-5">
             <div className="overflow-x-auto ">
-              <MarcasTable
-                marcasList={marcasList}
-                incluirEliminados={incluirEliminados}
-                setEditingId={setEditingId}
-                setIsEditing={setIsEditing}
-                setIsModalOpen={setIsModalOpen}
-                setMarcasList={setMarcasList}
-                setNuevaMarca={setNuevaMarca}
-              />
+              <MarcasTable />
             </div>
           </div>
         </div>

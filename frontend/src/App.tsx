@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import Footer from './components/Footer'
 import NotFoundPage from './pages/NotFoundPage'
 import Login from './pages/Login'
+import { MarcasProvider } from './context/MarcasContext'
 
 function App() {
   return (
@@ -16,7 +17,14 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/marcas" element={<Marcas />} />
+        <Route
+          path="/marcas"
+          element={
+            <MarcasProvider>
+              <Marcas />
+            </MarcasProvider>
+          }
+        />
         <Route path="/productos" element={<Productos />} />
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<NotFoundPage />} />

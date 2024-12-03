@@ -2,28 +2,20 @@ import { MARCAS_URL } from '../constants'
 import { MarcaDTO } from '../dtos/MarcaDTO'
 import ToastType from '../enums/ToastType'
 import useAppContext from '../hooks/useAppContext'
+import useMarcasContext from '../hooks/useMarcasContext'
 import MarcaItem from './MarcaItem'
 
-type Props = {
-  marcasList: MarcaDTO[]
-  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>
-  incluirEliminados: boolean
-  setEditingId: React.Dispatch<React.SetStateAction<number | null>>
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
-  setMarcasList: React.Dispatch<React.SetStateAction<MarcaDTO[]>>
-  setNuevaMarca: React.Dispatch<React.SetStateAction<Omit<MarcaDTO, 'id'>>>
-}
-
-function MarcasTable({
-  marcasList,
-  setMarcasList,
-  setNuevaMarca,
-  setIsEditing,
-  setEditingId,
-  incluirEliminados,
-  setIsModalOpen,
-}: Props) {
+function MarcasTable() {
   const { showToast } = useAppContext()
+  const {
+    marcasList,
+    setMarcasList,
+    setNuevaMarca,
+    setIsEditing,
+    setEditingId,
+    incluirEliminados,
+    setIsModalOpen,
+  } = useMarcasContext()
 
   const handleEdit = (marca: MarcaDTO) => {
     setNuevaMarca({
