@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.eshop.progavanzada.dtos.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.SignUpDTO;
 import com.eshop.progavanzada.enums.UserRole;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
 import com.eshop.progavanzada.repositories.UserRepository;
-import com.eshop.progavanzada.services.AuthService;
+import com.eshop.progavanzada.services.auth.AuthService;
 
 @SpringBootTest
 public class SignUpServiceTest {

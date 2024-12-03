@@ -1,11 +1,11 @@
-package com.eshop.progavanzada.services;
+package com.eshop.progavanzada.services.productos;
 
 import jakarta.persistence.ElementCollection;
 
 import java.util.List;
 
-import com.eshop.progavanzada.dtos.ProductoDTO;
-import com.eshop.progavanzada.dtos.UpdateProductoDTO;
+import com.eshop.progavanzada.dtos.productos.ProductoDTO;
+import com.eshop.progavanzada.dtos.productos.UpdateProductoDTO;
 import com.eshop.progavanzada.models.Producto;
 
 public interface IProductoService {

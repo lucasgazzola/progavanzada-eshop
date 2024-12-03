@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.controllers;
+package com.eshop.progavanzada.controllers.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eshop.progavanzada.dtos.JwtDTO;
-import com.eshop.progavanzada.dtos.SignInDTO;
-import com.eshop.progavanzada.dtos.SignUpDTO;
-import com.eshop.progavanzada.services.AuthService;
+import com.eshop.progavanzada.dtos.auth.JwtDTO;
+import com.eshop.progavanzada.dtos.auth.SignInDTO;
+import com.eshop.progavanzada.dtos.auth.SignUpDTO;
+import com.eshop.progavanzada.services.auth.AuthService;
 
 import jakarta.validation.Valid;
 
-// controllers/AuthController.java
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

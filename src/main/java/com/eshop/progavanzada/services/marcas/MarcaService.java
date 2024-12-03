@@ -1,10 +1,10 @@
-package com.eshop.progavanzada.services;
+package com.eshop.progavanzada.services.marcas;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eshop.progavanzada.dtos.MarcaDTO;
-import com.eshop.progavanzada.dtos.UpdateMarcaDTO;
+import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
+import com.eshop.progavanzada.dtos.marcas.UpdateMarcaDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.exceptions.DataConflictException;
 import com.eshop.progavanzada.exceptions.NotFoundException;
@@ -20,7 +20,7 @@ public class MarcaService implements IMarcaService {
   private MarcaRepository repository;
 
   @Override
-  public List<MarcaDTO> listarMarcas(boolean incluirEliminados) {
+  public List<MarcaDTO> listar(boolean incluirEliminados) {
     // Buscamos todas las marcas o solo las no eliminadas
     // Dependiendo de si incluirEliminados es true o false
     List<Marca> marcas;
@@ -44,7 +44,7 @@ public class MarcaService implements IMarcaService {
   }
 
   @Override
-  public MarcaDTO crearMarca(MarcaDTO marcaDTO) {
+  public MarcaDTO crear(MarcaDTO marcaDTO) {
     // Buscamos todas las marcas
     List<Marca> marcas = this.repository.findAll();
     if (marcaDTO.getNombre() == null) {
@@ -94,7 +94,7 @@ public class MarcaService implements IMarcaService {
   }
 
   @Override
-  public MarcaDTO actualizarMarca(Integer id, UpdateMarcaDTO marcaDTO) {
+  public MarcaDTO actualizar(Integer id, UpdateMarcaDTO marcaDTO) {
     // Si todos los campos del cuerpo de la petición son nulos, lanza una excepción
     if (marcaDTO.isEmpty())
       throw new BadRequestException("No se han especificado campos a actualizar.");
@@ -143,7 +143,7 @@ public class MarcaService implements IMarcaService {
   }
 
   @Override
-  public void eliminarMarca(Integer id) {
+  public void eliminar(Integer id) {
     // Buscamos la marca por id y si no existe, lanza una excepción
     MarcaDTO marcaDTO = this.buscarPorId(id);
     if (marcaDTO == null) {
@@ -159,7 +159,7 @@ public class MarcaService implements IMarcaService {
   }
 
   @Override
-  public void recuperarMarca(Marca marca) {
+  public void recuperarEliminado(Marca marca) {
     // Recuperamos la marca setteando su estado eliminado a verdadero
     // Luego, guardamos los cambios
     marca.recuperarLogico();

@@ -12,11 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.eshop.progavanzada.dtos.MarcaDTO;
+import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
 import com.eshop.progavanzada.exceptions.NotFoundException;
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.repositories.MarcaRepository;
-import com.eshop.progavanzada.services.MarcaService;
+import com.eshop.progavanzada.services.marcas.MarcaService;
 
 @SpringBootTest
 public class BuscarMarcaServiceTest {

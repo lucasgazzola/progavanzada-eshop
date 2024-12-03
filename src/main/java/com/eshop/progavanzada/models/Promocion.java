@@ -16,7 +16,7 @@ import lombok.Data;
 public class Promocion {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Integer id;
 
   private String nombre; // Nombre descriptivo de la promoción
   private String tipoDescuento; // "PORCENTAJE" o "FIJO"

@@ -1,16 +1,15 @@
-package com.eshop.progavanzada.controllers;
+package com.eshop.progavanzada.controllers.productos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.eshop.progavanzada.services.IProductoService;
+import com.eshop.progavanzada.dtos.productos.ProductoDTO;
+import com.eshop.progavanzada.dtos.productos.UpdateProductoDTO;
+import com.eshop.progavanzada.services.productos.IProductoService;
 
 import jakarta.validation.Valid;
-
-import com.eshop.progavanzada.dtos.ProductoDTO;
-import com.eshop.progavanzada.dtos.UpdateProductoDTO;
 
 import java.util.List;
 

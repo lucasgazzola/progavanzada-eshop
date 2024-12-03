@@ -1,9 +1,8 @@
-package com.eshop.progavanzada.dtos;
+package com.eshop.progavanzada.dtos.auth;
 
 import com.eshop.progavanzada.constants.Consts;
 import com.eshop.progavanzada.enums.UserRole;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -12,11 +11,7 @@ import lombok.Data;
 
 @Data
 public class SignUpDTO {
-
-  // TODO: REMOVER LA PARTE DEL NOMBRE DEL FRONTEND
-
   @NotNull(message = "El email es obligatorio")
-  @Email(message = "El email no es válido")
   @Pattern(regexp = Consts.EMAIL_REGEX, message = "El email no es válido")
   private String username;
 
@@ -27,5 +22,4 @@ public class SignUpDTO {
 
   @NotNull(message = "El rol es obligatorio")
   private UserRole rol;
-
 }

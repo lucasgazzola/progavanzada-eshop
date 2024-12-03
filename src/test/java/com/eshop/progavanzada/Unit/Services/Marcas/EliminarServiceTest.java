@@ -13,11 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.repositories.MarcaRepository;
-import com.eshop.progavanzada.services.MarcaService;
+import com.eshop.progavanzada.services.marcas.MarcaService;
 import com.eshop.progavanzada.exceptions.NotFoundException;
 
 @SpringBootTest
-public class EliminarMarcaServiceTest {
+public class EliminarServiceTest {
   @Mock
   private MarcaRepository marcaRepository;
 
@@ -35,7 +35,7 @@ public class EliminarMarcaServiceTest {
 
     when(marcaRepository.findById(1)).thenReturn(Optional.of(marca));
 
-    assertDoesNotThrow(() -> marcaService.eliminarMarca(marca.getId()));
+    assertDoesNotThrow(() -> marcaService.eliminar(marca.getId()));
   }
 
   @DisplayName("Eliminar marca sin éxito por Id incorrecto")
@@ -49,6 +49,6 @@ public class EliminarMarcaServiceTest {
 
     when(marcaRepository.findById(1)).thenThrow(NotFoundException.class);
 
-    assertThrows(NotFoundException.class, () -> marcaService.eliminarMarca(marca.getId()));
+    assertThrows(NotFoundException.class, () -> marcaService.eliminar(marca.getId()));
   }
 }

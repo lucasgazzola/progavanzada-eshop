@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.dtos;
+package com.eshop.progavanzada.dtos.marcas;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

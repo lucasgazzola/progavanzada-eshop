@@ -15,7 +15,7 @@ import lombok.Data;
 public class MovimientoStock {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Integer id;
 
   @ManyToOne
   @JoinColumn(name = "variante_id")

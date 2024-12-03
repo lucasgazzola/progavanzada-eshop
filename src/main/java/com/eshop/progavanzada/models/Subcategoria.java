@@ -1,10 +1,5 @@
 package com.eshop.progavanzada.models;
 
-import java.time.Instant;
-
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,7 +13,7 @@ import lombok.Data;
 public class Subcategoria {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private Integer id;
 
   private String nombre;
 
@@ -28,13 +23,7 @@ public class Subcategoria {
   @JoinColumn(name = "categoriaId", nullable = false)
   private Categoria categoria;
 
-  @CreatedDate
-  private Instant createdDate;
-
-  @LastModifiedDate
-  private Instant updatedDate;
-
-  private boolean eliminado = false;
+  private Boolean eliminado = false;
 
   public void eliminarLogico() {
     this.setEliminado(true);

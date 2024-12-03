@@ -2,8 +2,8 @@ package com.eshop.progavanzada.mappers;
 
 import org.springframework.stereotype.Component;
 
-import com.eshop.progavanzada.dtos.MarcaDTO;
-import com.eshop.progavanzada.dtos.ProductoDTO;
+import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
+import com.eshop.progavanzada.dtos.productos.ProductoDTO;
 import com.eshop.progavanzada.models.Producto;
 
 @Component

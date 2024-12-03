@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.services;
+package com.eshop.progavanzada.services.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 
 import com.eshop.progavanzada.config.auth.TokenProvider;
 import com.eshop.progavanzada.constants.Consts;
-import com.eshop.progavanzada.dtos.JwtDTO;
-import com.eshop.progavanzada.dtos.SignInDTO;
-import com.eshop.progavanzada.dtos.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.JwtDTO;
+import com.eshop.progavanzada.dtos.auth.SignInDTO;
+import com.eshop.progavanzada.dtos.auth.SignUpDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
 import com.eshop.progavanzada.repositories.UserRepository;

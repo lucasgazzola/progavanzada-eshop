@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.services;
+package com.eshop.progavanzada.services.productos;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,9 +7,9 @@ import com.eshop.progavanzada.repositories.MarcaRepository;
 import com.eshop.progavanzada.repositories.ProductoRepository;
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.models.Producto;
-import com.eshop.progavanzada.dtos.ProductoDTO;
-import com.eshop.progavanzada.dtos.UpdateProductoDTO;
 import com.eshop.progavanzada.mappers.ProductoMapper;
+import com.eshop.progavanzada.dtos.productos.ProductoDTO;
+import com.eshop.progavanzada.dtos.productos.UpdateProductoDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.exceptions.NotFoundException;
 

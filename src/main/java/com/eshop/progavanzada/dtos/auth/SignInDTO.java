@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.dtos;
+package com.eshop.progavanzada.dtos.auth;
 
 import com.eshop.progavanzada.constants.Consts;
 

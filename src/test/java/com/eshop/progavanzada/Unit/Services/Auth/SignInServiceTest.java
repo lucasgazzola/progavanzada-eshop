@@ -18,14 +18,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 
 import com.eshop.progavanzada.config.auth.TokenProvider;
-import com.eshop.progavanzada.dtos.JwtDTO;
-import com.eshop.progavanzada.dtos.SignInDTO;
-import com.eshop.progavanzada.dtos.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.JwtDTO;
+import com.eshop.progavanzada.dtos.auth.SignInDTO;
+import com.eshop.progavanzada.dtos.auth.SignUpDTO;
 import com.eshop.progavanzada.enums.UserRole;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
 import com.eshop.progavanzada.repositories.UserRepository;
-import com.eshop.progavanzada.services.AuthService;
+import com.eshop.progavanzada.services.auth.AuthService;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

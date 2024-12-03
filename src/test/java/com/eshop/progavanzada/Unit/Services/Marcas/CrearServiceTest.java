@@ -14,16 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.eshop.progavanzada.dtos.MarcaDTO;
+import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.exceptions.DataConflictException;
 import com.eshop.progavanzada.mappers.MarcaMapper;
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.repositories.MarcaRepository;
-import com.eshop.progavanzada.services.MarcaService;
+import com.eshop.progavanzada.services.marcas.MarcaService;
 
 @SpringBootTest
-public class CrearMarcaServiceTest {
+public class CrearServiceTest {
   @Mock
   private MarcaRepository marcaRepository;
 
@@ -42,7 +42,7 @@ public class CrearMarcaServiceTest {
 
     MarcaDTO marcaDTO = MarcaMapper.toDTO(nuevaMarca);
 
-    MarcaDTO createdMarca = marcaService.crearMarca(marcaDTO);
+    MarcaDTO createdMarca = marcaService.crear(marcaDTO);
 
     assertNotNull(createdMarca);
   }
@@ -63,7 +63,7 @@ public class CrearMarcaServiceTest {
 
     // Intento de creación de marca repetida
     assertThrows(DataConflictException.class, () -> {
-      marcaService.crearMarca(marcaDTO);
+      marcaService.crear(marcaDTO);
     });
   }
 
@@ -85,7 +85,7 @@ public class CrearMarcaServiceTest {
 
     // Intento de creación de marca repetida (ignorando mayúsculas)
     assertThrows(DataConflictException.class, () -> {
-      marcaService.crearMarca(marcaDTO);
+      marcaService.crear(marcaDTO);
     });
   }
 
@@ -99,7 +99,7 @@ public class CrearMarcaServiceTest {
 
     // Intento de creación de marca sin nombre
     assertThrows(BadRequestException.class, () -> {
-      marcaService.crearMarca(marcaDTO);
+      marcaService.crear(marcaDTO);
     });
   }
 
@@ -111,7 +111,7 @@ public class CrearMarcaServiceTest {
     nuevaMarca.setNombre("Test Marca");
     MarcaDTO marcaDTO = MarcaMapper.toDTO(nuevaMarca);
 
-    MarcaDTO createdMarca = marcaService.crearMarca(marcaDTO);
+    MarcaDTO createdMarca = marcaService.crear(marcaDTO);
 
     // Creación de marca sin descripción
     assertEquals(createdMarca, marcaDTO);
@@ -125,7 +125,7 @@ public class CrearMarcaServiceTest {
     nuevaMarca.setNombre("Test       Marca");
     MarcaDTO marcaDTO = MarcaMapper.toDTO(nuevaMarca);
 
-    MarcaDTO createdMarca = marcaService.crearMarca(marcaDTO);
+    MarcaDTO createdMarca = marcaService.crear(marcaDTO);
 
     // Creación de marca sin descripción
     assertEquals(createdMarca.getNombre(), "Test Marca");
@@ -139,7 +139,7 @@ public class CrearMarcaServiceTest {
     nuevaMarca.setNombre("     Test   Marca    ");
     MarcaDTO marcaDTO = MarcaMapper.toDTO(nuevaMarca);
 
-    MarcaDTO createdMarca = marcaService.crearMarca(marcaDTO);
+    MarcaDTO createdMarca = marcaService.crear(marcaDTO);
 
     // Creación de marca sin descripción
     assertEquals(createdMarca.getNombre(), "Test Marca");

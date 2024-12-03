@@ -22,7 +22,12 @@ public class Producto {
 
   private Double precio;
 
+  @ManyToOne
+  @JoinColumn(name = "categoriaId")
   private Categoria categoria;
+
+  @ManyToOne
+  @JoinColumn(name = "subcategoriaId")
   private Subcategoria subcategoria;
 
   private List<String> imagenes;

@@ -1,5 +1,6 @@
-package com.eshop.progavanzada.dtos;
+package com.eshop.progavanzada.dtos.productos;
 
+import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.validation.constraints.PositiveOrZero;

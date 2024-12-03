@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.dtos;
+package com.eshop.progavanzada.dtos.auth;
 
 public record JwtDTO(
     String accessToken) {
