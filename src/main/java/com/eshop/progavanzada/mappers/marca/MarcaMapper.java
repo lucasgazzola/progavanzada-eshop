@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.mappers;
+package com.eshop.progavanzada.mappers.marca;
 
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class MarcaMapper {
     return marcaDTO;
   }
 
-  public static Marca toEntity(MarcaDTO marcaDTO) {
+  public static Marca toModel(MarcaDTO marcaDTO) {
     Marca marca = new Marca();
     marca.setId(marcaDTO.getId());
     marca.setDescripcion(marcaDTO.getDescripcion());

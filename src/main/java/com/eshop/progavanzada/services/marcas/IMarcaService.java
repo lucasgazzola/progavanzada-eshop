@@ -17,7 +17,7 @@ public interface IMarcaService {
 
   public MarcaDTO crear(MarcaDTO marcaDTO);
 
-  public MarcaDTO actualizar(Integer id, UpdateMarcaDTO marcaDTO);
+  public MarcaDTO actualizar(UpdateMarcaDTO marcaDTO);
 
   public void eliminar(Integer id);
 

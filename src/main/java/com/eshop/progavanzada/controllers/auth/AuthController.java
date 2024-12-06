@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eshop.progavanzada.dtos.auth.JwtDTO;
 import com.eshop.progavanzada.dtos.auth.SignInDTO;
-import com.eshop.progavanzada.dtos.auth.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.CreateUserDTO;
 import com.eshop.progavanzada.services.auth.AuthService;
 
 import jakarta.validation.Valid;
@@ -23,7 +23,7 @@ public class AuthController {
   private AuthService service;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDTO data) {
+  public ResponseEntity<?> signUp(@RequestBody @Valid CreateUserDTO data) {
     this.service.signUp(data);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }

@@ -8,7 +8,7 @@ import com.eshop.progavanzada.dtos.marcas.UpdateMarcaDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.exceptions.DataConflictException;
 import com.eshop.progavanzada.exceptions.NotFoundException;
-import com.eshop.progavanzada.mappers.MarcaMapper;
+import com.eshop.progavanzada.mappers.marca.MarcaMapper;
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.repositories.MarcaRepository;
 
@@ -88,19 +88,22 @@ public class MarcaService implements IMarcaService {
 
     // Si no hay marca repetida, creamos la marca
     // Agregamos la marca a la lista
-    Marca marca = MarcaMapper.toEntity(marcaDTO);
-    this.repository.save(marca);
-    return MarcaMapper.toDTO(marca);
+    Marca marca = MarcaMapper.toModel(marcaDTO);
+    return MarcaMapper.toDTO(this.repository.save(marca));
   }
 
   @Override
-  public MarcaDTO actualizar(Integer id, UpdateMarcaDTO marcaDTO) {
+  public MarcaDTO actualizar(UpdateMarcaDTO marcaDTO) {
+    if (marcaDTO.getId() == null || marcaDTO.getId() <= 0) {
+      throw new BadRequestException("El id no puede ser nulo o menor o igual a cero");
+    }
+
     // Si todos los campos del cuerpo de la petición son nulos, lanza una excepción
     if (marcaDTO.isEmpty())
       throw new BadRequestException("No se han especificado campos a actualizar.");
 
     // Buscamos la marca por id
-    Marca marca = MarcaMapper.toEntity(this.buscarPorId(id));
+    Marca marca = MarcaMapper.toModel(this.buscarPorId(marcaDTO.getId()));
 
     // Actualizamos los campos de la marca con el id especificado
     if (marcaDTO.getDescripcion() != null)
@@ -136,10 +139,8 @@ public class MarcaService implements IMarcaService {
     }
 
     // Guardar los cambios en la base de datos.
-    this.repository.save(marca);
-
     // Utilizar MarcaMapper para mapear la marca a DTO.
-    return MarcaMapper.toDTO(marca);
+    return MarcaMapper.toDTO(this.repository.save(marca));
   }
 
   @Override
@@ -153,7 +154,7 @@ public class MarcaService implements IMarcaService {
 
     // Si el id existe, eliminamos la marca de manera lógica
     // Luego, guardamos los cambios
-    Marca marca = MarcaMapper.toEntity(marcaDTO);
+    Marca marca = MarcaMapper.toModel(marcaDTO);
     marca.eliminarLogico();
     this.repository.save(marca);
   }

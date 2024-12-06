@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.eshop.progavanzada.dtos.categoria.CategoriaDTO;
-import com.eshop.progavanzada.mappers.CategoriaMapper;
+import com.eshop.progavanzada.mappers.categoria.CategoriaMapper;
 import com.eshop.progavanzada.models.Categoria;
 import com.eshop.progavanzada.repositories.CategoriaRepository;
 

@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.eshop.progavanzada.dtos.auth.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.CreateUserDTO;
 import com.eshop.progavanzada.enums.UserRole;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
@@ -42,7 +42,7 @@ public class SignUpServiceTest {
 
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Contraseña con longitud mínima
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);
@@ -68,7 +68,7 @@ public class SignUpServiceTest {
   void testRegistrarUsuario_Exito_ExactMaxLengthPassword() {
     int randomNumber = (int) (Math.random() * 99999999);
 
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
 
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Contraseña con longitud máxima
@@ -94,7 +94,7 @@ public class SignUpServiceTest {
   void testRegistrarUsuario_NoEmail() {
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Sin email
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setPassword("password");
     signUpDTO.setRol(UserRole.USER);
 
@@ -112,7 +112,7 @@ public class SignUpServiceTest {
   void testRegistrarUsuario_BadEmail() {
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Con email mal formateado
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     // Username debe ser un email válido
     signUpDTO.setUsername("john.doe");
     signUpDTO.setPassword("12345678");
@@ -135,7 +135,7 @@ public class SignUpServiceTest {
 
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Sin nombre
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("password");
     signUpDTO.setRol(UserRole.USER);
@@ -157,7 +157,7 @@ public class SignUpServiceTest {
 
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Sin contraseña
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setRol(UserRole.USER);
 
@@ -176,7 +176,7 @@ public class SignUpServiceTest {
 
     // Creamos un objeto SignUpDTO con los datos del usuario
     // Contraseña con longitud menor a la mínima
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("1234567");
     signUpDTO.setRol(UserRole.USER);
@@ -198,7 +198,7 @@ public class SignUpServiceTest {
 
     // Sin contraseña
     // Contraseña con longitud mayor a la máxima
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setUsername("john.doe" + randomNumber + "@example.com");
     signUpDTO.setPassword("1234567890123456789012345");
     signUpDTO.setRol(UserRole.USER);

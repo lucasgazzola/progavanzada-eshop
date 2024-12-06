@@ -1,4 +1,4 @@
-package com.eshop.progavanzada.mappers;
+package com.eshop.progavanzada.mappers.categoria;
 
 import com.eshop.progavanzada.dtos.categoria.CategoriaDTO;
 import com.eshop.progavanzada.models.Categoria;

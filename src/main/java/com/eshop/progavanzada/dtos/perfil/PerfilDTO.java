@@ -1,6 +1,4 @@
-package com.eshop.progavanzada.dtos.marcas;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+package com.eshop.progavanzada.dtos.perfil;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,22 +7,23 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true, value = { "empty" })
-public class MarcaDTO {
+public class PerfilDTO {
 
   @Positive(message = "El id debe ser positivo")
   private Integer id;
 
-  @Size(min = 2, max = 32, message = "El nombre debe tener entre 2 y 32 caracteres.")
+  @Size(min = 3, max = 50, message = "El nombre debe tener entre 3 y 50 caracteres.")
   @NotNull(message = "El nombre es obligatorio")
   @NotEmpty(message = "El nombre no puede estar vacío")
   private String nombre;
 
-  private String descripcion;
+  private String direccion;
+
+  private String telefono;
 
   private Boolean eliminado;
 
   public boolean isEmpty() {
-    return this.nombre == null && this.eliminado == null && this.descripcion == null;
+    return this.nombre == null && this.direccion == null && this.telefono == null && this.eliminado == null;
   }
 }

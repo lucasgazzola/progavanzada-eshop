@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.exceptions.DataConflictException;
-import com.eshop.progavanzada.mappers.MarcaMapper;
+import com.eshop.progavanzada.mappers.marca.MarcaMapper;
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.repositories.MarcaRepository;
 import com.eshop.progavanzada.services.marcas.MarcaService;

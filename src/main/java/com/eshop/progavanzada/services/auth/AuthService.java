@@ -14,7 +14,7 @@ import com.eshop.progavanzada.config.auth.TokenProvider;
 import com.eshop.progavanzada.constants.Consts;
 import com.eshop.progavanzada.dtos.auth.JwtDTO;
 import com.eshop.progavanzada.dtos.auth.SignInDTO;
-import com.eshop.progavanzada.dtos.auth.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.CreateUserDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
 import com.eshop.progavanzada.repositories.UserRepository;
@@ -41,7 +41,7 @@ public class AuthService implements UserDetailsService {
     return user;
   }
 
-  public User signUp(SignUpDTO data) throws BadRequestException {
+  public User signUp(CreateUserDTO data) throws BadRequestException {
     if (data.getPassword() == null || data.getPassword().isEmpty()) {
       throw new BadRequestException("La contraseña es requerida");
     }

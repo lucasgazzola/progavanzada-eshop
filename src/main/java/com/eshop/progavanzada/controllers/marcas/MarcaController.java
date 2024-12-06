@@ -41,7 +41,7 @@ public class MarcaController {
 
   @PutMapping("/{id}")
   public ResponseEntity<MarcaDTO> updateMarca(@PathVariable Integer id, @Valid @RequestBody UpdateMarcaDTO marcaDTO) {
-    MarcaDTO dto = this.service.actualizar(id, marcaDTO);
+    MarcaDTO dto = this.service.actualizar(marcaDTO);
     return new ResponseEntity<>(dto, HttpStatus.OK);
   }
 

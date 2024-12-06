@@ -7,11 +7,11 @@ import com.eshop.progavanzada.repositories.MarcaRepository;
 import com.eshop.progavanzada.repositories.ProductoRepository;
 import com.eshop.progavanzada.models.Marca;
 import com.eshop.progavanzada.models.Producto;
-import com.eshop.progavanzada.mappers.ProductoMapper;
 import com.eshop.progavanzada.dtos.productos.ProductoDTO;
 import com.eshop.progavanzada.dtos.productos.UpdateProductoDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.exceptions.NotFoundException;
+import com.eshop.progavanzada.mappers.producto.ProductoMapper;
 
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class ProductoService implements IProductoService {
     }
 
     // Mapeamos el DTO a una instancia de Entity.
-    Producto producto = ProductoMapper.toEntity(productoDTO);
+    Producto producto = ProductoMapper.toModel(productoDTO);
 
     // Agregamos la marca a la instancia de Entity.
     producto.setMarca(marca);
@@ -108,7 +108,7 @@ public class ProductoService implements IProductoService {
 
     // Buscamos el producto por id
     // Si el id del producto no existe, lanza una excepción
-    Producto producto = ProductoMapper.toEntity(this.buscarPorId(id));
+    Producto producto = ProductoMapper.toModel(this.buscarPorId(id));
     if (producto == null) {
       throw new NotFoundException("El producto con id '" + id + "' no existe");
     }
@@ -162,7 +162,7 @@ public class ProductoService implements IProductoService {
 
     // Si el id existe, eliminamos el producto de manera lógica
     // Luego, guardamos los cambios
-    Producto producto = ProductoMapper.toEntity(productoDTO);
+    Producto producto = ProductoMapper.toModel(productoDTO);
     producto.eliminarLogico();
     this.repository.save(producto);
   }

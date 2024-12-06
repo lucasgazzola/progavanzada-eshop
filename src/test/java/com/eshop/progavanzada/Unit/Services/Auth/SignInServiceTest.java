@@ -20,7 +20,7 @@ import org.springframework.security.core.Authentication;
 import com.eshop.progavanzada.config.auth.TokenProvider;
 import com.eshop.progavanzada.dtos.auth.JwtDTO;
 import com.eshop.progavanzada.dtos.auth.SignInDTO;
-import com.eshop.progavanzada.dtos.auth.SignUpDTO;
+import com.eshop.progavanzada.dtos.auth.CreateUserDTO;
 import com.eshop.progavanzada.enums.UserRole;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.models.User;
@@ -50,7 +50,7 @@ public class SignInServiceTest {
   @BeforeEach
   void setup() {
     // Crear un nuevo usuario antes de cada prueba
-    SignUpDTO signUpDTO = new SignUpDTO();
+    CreateUserDTO signUpDTO = new CreateUserDTO();
     signUpDTO.setUsername("john.doe@example.com");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);

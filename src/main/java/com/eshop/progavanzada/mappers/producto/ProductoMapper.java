@@ -1,9 +1,10 @@
-package com.eshop.progavanzada.mappers;
+package com.eshop.progavanzada.mappers.producto;
 
 import org.springframework.stereotype.Component;
 
 import com.eshop.progavanzada.dtos.marcas.MarcaDTO;
 import com.eshop.progavanzada.dtos.productos.ProductoDTO;
+import com.eshop.progavanzada.mappers.marca.MarcaMapper;
 import com.eshop.progavanzada.models.Producto;
 
 @Component
@@ -27,7 +28,7 @@ public class ProductoMapper {
     return productoDTO;
   }
 
-  public static Producto toEntity(ProductoDTO productoDTO) {
+  public static Producto toModel(ProductoDTO productoDTO) {
     Producto producto = new Producto();
     producto.setId(productoDTO.getId());
     producto.setDescripcion(productoDTO.getDescripcion());
@@ -44,7 +45,7 @@ public class ProductoMapper {
 
     // Asignamos el objeto Marca con los datos del objeto MarcaDTO
     // Luego lo setteamos al objeto Producto
-    producto.setMarca(MarcaMapper.toEntity(productoDTO.getMarca()));
+    producto.setMarca(MarcaMapper.toModel(productoDTO.getMarca()));
     return producto;
   }
 }
