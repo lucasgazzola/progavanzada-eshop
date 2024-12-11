@@ -10,6 +10,7 @@ import Footer from './components/Footer'
 import NotFoundPage from './pages/NotFoundPage'
 import Login from './pages/Login'
 import { MarcasProvider } from './context/MarcasContext'
+import Register from './pages/Register'
 
 function App() {
   return (
@@ -27,11 +28,12 @@ function App() {
         />
         <Route path="/productos" element={<Productos />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="*" element={<NotFoundPage />} />
         {/* <Route path="/categorias" element={<p>Categorias</p>} /> */}
       </Routes>
       {/* <ListaDeMarcas />
-      <AgregarMarca /> */}
+        <AgregarMarca /> */}
       <Footer />
     </div>
   )

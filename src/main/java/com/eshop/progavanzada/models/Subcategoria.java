@@ -20,7 +20,7 @@ public class Subcategoria {
   private String descripcion;
 
   @ManyToOne
-  @JoinColumn(name = "categoriaId", nullable = false)
+  @JoinColumn(name = "categoria_id", nullable = false)
   private Categoria categoria;
 
   private Boolean eliminado = false;

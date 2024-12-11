@@ -14,13 +14,15 @@ public class UpdateUserDTO {
   private Integer id;
 
   @Pattern(regexp = Consts.EMAIL_REGEX, message = "El email no es válido")
-  private String username;
+  private String email;
 
   @NotEmpty(message = "La contraseña no puede estar vacía")
   @Size(min = 8, max = 24, message = "La contraseña debe tener entre 8 y 24 caracteres")
   private String password;
 
-  private Integer perfilId;
-
   private String rol;
+
+  public boolean isEmpty() {
+    return this.email == null && this.password == null && this.rol == null;
+  }
 }

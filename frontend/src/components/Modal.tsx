@@ -1,5 +1,6 @@
 import React from 'react'
 import { MARCA_INICIAL, MARCAS_URL } from '../constants'
+import Cookies from 'js-cookie'
 import { MarcaDTO } from '../dtos/MarcaDTO'
 import ToastType from '../enums/ToastType'
 import useAppContext from '../hooks/useAppContext'
@@ -52,12 +53,16 @@ function Modal({
         : `${MARCAS_URL}` // Si estamos agregando, creamos una nueva
 
       const method = editingId ? 'PUT' : 'POST'
+      const token = Cookies.get('accessToken') // Recupera el token de las cookies
+      console.log({ token })
 
       const response = await fetch(url, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token ? `Bearer ${token}` : '',
         },
+        credentials: 'include',
         body: JSON.stringify({
           nombre: nuevaMarca.nombre.trim(),
           descripcion: nuevaMarca.descripcion.trim(),

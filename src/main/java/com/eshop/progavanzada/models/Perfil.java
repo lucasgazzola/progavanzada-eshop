@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import lombok.Data;
 
@@ -21,17 +20,6 @@ public class Perfil {
 
   private String telefono;
 
-  @OneToOne
-  @JoinColumn(name = "userId")
+  @OneToOne(mappedBy = "perfil") // Relación inversa
   private User user;
-
-  private boolean eliminado = false;
-
-  public void eliminarLogico() {
-    this.setEliminado(true);
-  }
-
-  public void recuperarLogico() {
-    this.setEliminado(false);
-  }
 }

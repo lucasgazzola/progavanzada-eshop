@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 
@@ -22,11 +24,12 @@ public class Pedido {
   @OneToMany(mappedBy = "pedido")
   private List<DetallePedido> detallesPedido;
 
+  // Relación con Usuario
+  @ManyToOne
+  @JoinColumn(name = "user_id")
   private User user;
 
   private EstadoPedido estado;
-
-  private boolean eliminado = false;
 
   // Agregación
   public void agregarDetallePedido(DetallePedido detallePedido) {
@@ -36,13 +39,4 @@ public class Pedido {
   public void eliminarDetallePedido(DetallePedido detallePedido) {
     this.detallesPedido.remove(detallePedido);
   }
-
-  public void eliminarLogico() {
-    this.setEliminado(true);
-  }
-
-  public void recuperarLogico() {
-    this.setEliminado(false);
-  }
-
 }

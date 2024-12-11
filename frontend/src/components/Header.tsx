@@ -1,5 +1,4 @@
 import LinkItem from './LinkItem'
-import ThemeToggle from './ThemeToggle'
 
 function Header() {
   return (
@@ -15,13 +14,9 @@ function Header() {
           <li>
             <LinkItem to={'/productos'} text={'Productos'} />
           </li>
-          {/* <li>
-            <LinkItem to={'/categorias'} text={'Categorias'} />
-          </li> */}
         </ul>
       </nav>
       <div>
-        <ThemeToggle />
         <LinkItem to={'/login'} text={'Login'} />
       </div>
     </header>

@@ -1,17 +1,33 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Aquí puedes agregar la lógica de autenticación
 
-    console.log('Username:', username)
-    console.log('Password:', password)
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+        credentials: 'include',
+      })
+
+      console.log({ response })
+      const data = await response.json()
+      console.log({ data })
+
+      // if (!response.ok) {
+      // }
+    } catch (error) {
+      console.error('Error: ', error)
+    }
     navigate('/')
   }
 
@@ -59,6 +75,14 @@ function Login() {
             className="bg-[#205988] text-white py-2 px-4 font-semibold  hover:bg-[#2d86c2] active:bg-[#184766]">
             Iniciar Sesión
           </button>
+        </div>
+        <div className="mt-2">
+          <span>
+            No tienes cuenta?{' '}
+            <Link className="text-blue-300 hover:underline" to={'/register'}>
+              Registrate
+            </Link>
+          </span>
         </div>
       </form>
     </div>

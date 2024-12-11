@@ -51,12 +51,12 @@ public class SignInServiceTest {
   void setup() {
     // Crear un nuevo usuario antes de cada prueba
     CreateUserDTO signUpDTO = new CreateUserDTO();
-    signUpDTO.setUsername("john.doe@example.com");
+    signUpDTO.setEmail("john.doe@example.com");
     signUpDTO.setPassword("12345678");
     signUpDTO.setRol(UserRole.USER);
 
     // Crear un usuario simulado
-    this.user = new User(signUpDTO.getUsername(),
+    this.user = new User(signUpDTO.getEmail(),
         signUpDTO.getPassword(), signUpDTO.getRol());
 
     this.authUser = new UsernamePasswordAuthenticationToken(user,
@@ -82,7 +82,7 @@ public class SignInServiceTest {
     signInDTO.setPassword("12345678");
 
     // Llamar al servicio para loguear el usuario
-    JwtDTO jwt = authService.signIn(signInDTO);
+    JwtDTO jwt = authService.signIn(signInDTO, null);
 
     // Verificar que el JWT no es nulo
     assertEquals(jwt.accessToken(), "fake-jwt-token");
@@ -101,6 +101,6 @@ public class SignInServiceTest {
     signInDTO.setPassword("bad-password");
 
     // Llamar al servicio para loguear el usuario
-    assertThrows(BadRequestException.class, () -> this.authService.signIn(signInDTO));
+    assertThrows(BadRequestException.class, () -> this.authService.signIn(signInDTO, null));
   }
 }

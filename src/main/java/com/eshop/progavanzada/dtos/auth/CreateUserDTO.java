@@ -11,9 +11,13 @@ import lombok.Data;
 
 @Data
 public class CreateUserDTO {
+  @NotNull(message = "El nombre es obligatorio")
+  @NotEmpty(message = "El nombre no puede estar vacío")
+  private String nombre;
+
   @NotNull(message = "El email es obligatorio")
   @Pattern(regexp = Consts.EMAIL_REGEX, message = "El email no es válido")
-  private String username;
+  private String email;
 
   @NotNull(message = "La contraseña es obligatoria")
   @NotEmpty(message = "La contraseña no puede estar vacía")

@@ -8,10 +8,10 @@ import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AppContextProvider>
-      <Router>
+    <Router>
+      <AppContextProvider>
         <App />
-      </Router>
-    </AppContextProvider>
+      </AppContextProvider>
+    </Router>
   </StrictMode>
 )

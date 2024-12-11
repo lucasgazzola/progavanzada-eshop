@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.eshop.progavanzada.enums.UserRole;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,11 +42,8 @@ public class User implements UserDetails {
 
   private String password;
 
-  @Builder.Default
-  private boolean eliminado = false;
-
-  @OneToOne
-  @JoinColumn(name = "perfilId")
+  @OneToOne(cascade = CascadeType.ALL) // Cascade asegura que las operaciones se propaguen
+  @JoinColumn(name = "perfil_id", referencedColumnName = "id") // Clave foránea en la tabla User
   private Perfil perfil;
 
   @Enumerated(EnumType.STRING)
@@ -88,13 +86,5 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
-  }
-
-  public void eliminarLogico() {
-    this.setEliminado(true);
-  }
-
-  public void recuperarLogico() {
-    this.setEliminado(false);
   }
 }

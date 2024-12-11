@@ -57,6 +57,14 @@ export const MarcasProvider: React.FC<{ children: ReactNode }> = ({
     setMarcas([...marcas, marca])
   }
 
+  useEffect(() => {
+    const fetchMarcas = async () =>
+      setMarcas(await (await fetch('http://localhost:8080/api/marcas')).json())
+    fetch('http://localhost:8080/api/marcas')
+    setMarcasList(marcas)
+    fetchMarcas()
+  }, [marcas])
+
   return (
     <MarcasContext.Provider
       value={{

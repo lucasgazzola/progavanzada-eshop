@@ -1,5 +1,7 @@
 package com.eshop.progavanzada.dtos.perfil;
 
+import com.eshop.progavanzada.models.User;
+
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -21,9 +23,9 @@ public class PerfilDTO {
 
   private String telefono;
 
-  private Boolean eliminado;
+  private User user;
 
   public boolean isEmpty() {
-    return this.nombre == null && this.direccion == null && this.telefono == null && this.eliminado == null;
+    return this.nombre == null && this.direccion == null && this.telefono == null;
   }
 }

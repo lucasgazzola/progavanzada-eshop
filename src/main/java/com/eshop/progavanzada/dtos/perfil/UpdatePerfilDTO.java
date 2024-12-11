@@ -18,9 +18,7 @@ public class UpdatePerfilDTO {
 
   private String telefono;
 
-  private Boolean eliminado;
-
   public boolean isEmpty() {
-    return this.nombre == null && this.direccion == null && this.eliminado == null && this.telefono == null;
+    return this.nombre == null && this.direccion == null && this.telefono == null;
   }
 }

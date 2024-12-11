@@ -23,11 +23,11 @@ public class Producto {
   private Double precio;
 
   @ManyToOne
-  @JoinColumn(name = "categoriaId")
+  @JoinColumn(name = "categoria_id")
   private Categoria categoria;
 
   @ManyToOne
-  @JoinColumn(name = "subcategoriaId")
+  @JoinColumn(name = "subcategoria_id")
   private Subcategoria subcategoria;
 
   private List<String> imagenes;
@@ -40,7 +40,7 @@ public class Producto {
   private List<Promocion> promociones;
 
   @ManyToOne
-  @JoinColumn(name = "marcaId", nullable = false)
+  @JoinColumn(name = "marca_id", nullable = false)
   private Marca marca;
 
   private boolean eliminado = false;

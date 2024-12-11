@@ -23,11 +23,11 @@ public class DetallePedido {
   private Double precioTotal;
 
   @ManyToOne
-  @JoinColumn(name = "productoId", nullable = false)
+  @JoinColumn(name = "producto_id", nullable = false)
   private Producto producto;
 
   @ManyToOne
-  @JoinColumn(name = "pedidoId", nullable = false)
+  @JoinColumn(name = "pedido_id", nullable = false)
   private Pedido pedido;
 
 }

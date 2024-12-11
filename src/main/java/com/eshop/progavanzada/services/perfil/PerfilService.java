@@ -1,7 +1,5 @@
 package com.eshop.progavanzada.services.perfil;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,27 +8,35 @@ import com.eshop.progavanzada.dtos.perfil.UpdatePerfilDTO;
 import com.eshop.progavanzada.exceptions.BadRequestException;
 import com.eshop.progavanzada.mappers.perfil.PerfilMapper;
 import com.eshop.progavanzada.models.Perfil;
+import com.eshop.progavanzada.models.User;
 import com.eshop.progavanzada.repositories.PerfilRepository;
+import com.eshop.progavanzada.repositories.UserRepository;
 
+//TODO: El perfil puede ser actualizado o leido por el usuario que lo creo o por un administrador
 @Service
 public class PerfilService implements IPerfilService {
   @Autowired
-  private PerfilRepository repository;
+  private PerfilRepository perfilRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   @Override
-  public List<PerfilDTO> listar(boolean incluirEliminados) {
-    List<Perfil> perfiles = this.repository.findAll();
-    if (incluirEliminados) {
-      perfiles = this.repository.findAll();
-    } else {
-      perfiles = this.repository.findByEliminado(false);
+  public PerfilDTO buscarPorUsuarioId(Integer usuarioId) {
+    User user = userRepository.findById(usuarioId).orElse(null);
+    if (user == null) {
+      throw new BadRequestException("El usuario con id " + usuarioId + " no existe");
     }
-    return perfiles.stream().map(PerfilMapper::toDTO).toList();
+    Perfil perfil = this.perfilRepository.findByUser(user);
+    if (perfil == null) {
+      throw new BadRequestException("El perfil con usuario id " + usuarioId + " no existe");
+    }
+    return PerfilMapper.toDTO(perfil);
   }
 
   @Override
   public PerfilDTO buscarPorId(Integer id) {
-    Perfil perfil = this.repository.findById(id).orElse(null);
+    Perfil perfil = this.perfilRepository.findById(id).orElse(null);
     if (perfil == null) {
       throw new BadRequestException("El perfil con id " + id + " no existe");
     }
@@ -40,7 +46,7 @@ public class PerfilService implements IPerfilService {
   @Override
   public PerfilDTO crear(PerfilDTO perfilDTO) {
     Perfil perfil = PerfilMapper.toModel(perfilDTO);
-    return PerfilMapper.toDTO(this.repository.save(perfil));
+    return PerfilMapper.toDTO(this.perfilRepository.save(perfil));
   }
 
   @Override
@@ -58,23 +64,6 @@ public class PerfilService implements IPerfilService {
     if (updatePerfilDTO.getTelefono() != null) {
       perfil.setTelefono(updatePerfilDTO.getTelefono());
     }
-    if (updatePerfilDTO.getEliminado() != null) {
-      if (updatePerfilDTO.getEliminado()) {
-        perfil.eliminarLogico();
-      } else {
-        perfil.recuperarLogico();
-      }
-    }
-    return PerfilMapper.toDTO(this.repository.save(perfil));
-  }
-
-  @Override
-  public void eliminar(Integer id) {
-    Perfil perfil = this.repository.findById(id).orElse(null);
-    if (perfil == null) {
-      throw new BadRequestException("El perfil no existe");
-    }
-    perfil.setEliminado(true);
-    this.repository.save(perfil);
+    return PerfilMapper.toDTO(this.perfilRepository.save(perfil));
   }
 }
